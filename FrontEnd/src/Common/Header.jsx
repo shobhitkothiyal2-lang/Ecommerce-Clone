@@ -11,15 +11,15 @@ function Header() {
         </span>
       </div>
 
-      <div className=" flex w-[1400px] h-[80px] mx-auto py-3">
-        <div className="flex items-center mr-5 cursor-pointer">
+      <div className="flex w-full h-[80px] items-center justify-between">
+        <div className="flex items-center ml-15 cursor-pointer">
           <img
             class="inline-block "
             sizes="145px"
             srcSet="//uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_180x.png?v=1652706765 180w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_360x.png?v=1652706765 360w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_540x.png?v=1652706765 540w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_720x.png?v=1652706765 720w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_900x.png?v=1652706765 900w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_1080x.png?v=1652706765 1080w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_1296x.png?v=1652706765 1296w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_1512x.png?v=1652706765 1512w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_1728x.png?v=1652706765 1728w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_1944x.png?v=1652706765 1944w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_2160x.png?v=1652706765 2160w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_2376x.png?v=1652706765 2376w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_2592x.png?v=1652706765 2592w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_2808x.png?v=1652706765 2808w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_2880x.png?v=1652706765 2880w">
           </img>
         </div>
-        <div className="flex items-center  gap-4">
+        <div className="flex items-end  gap-4 cursor-pointer mr-10">
         <svg
           class="w-[18px] h-[18px] flex"
           fill="currentColor"
@@ -70,42 +70,92 @@ function Header() {
         </div>
       </div>
 
-      <div className=" w-full bg-[#252525] h-[55px] flex items-center">
-        <div className="text-white  flex gap-7 max-w-[1150px] mx-10">
-          {HeaderNavigation.map((data) => (
-            <div key={data.id} className="relative group">
-              {/* Title */}
-              <h1 className="cursor-pointer py-2 group">
-                {/* Row */}
-                <div className="flex justify-between items-center">
-                  <span>{data.title}</span>
+      <div className="w-full bg-[#252525] h-[55px] flex">
+  <div className="text-white flex items-center gap-4 max-w-[1150px] h-full mx-10 ">
 
-                  <span className="text-[22px] transition-transform duration-300 group-hover:rotate-180">
-                    <RiArrowDropDownLine />
-                  </span>
-                </div>
+    {HeaderNavigation.map((data) => (
+      <div
+        key={data.id}
+        className="relative group h-full flex items-center"
+      >
+        {/* Title */}
+        <h1 className="relative cursor-pointer h-full flex items-center px-3">
 
-                {/* Underline */}
-                <div className="h-[2px] w-0 bg-[#F4F4F4] mt-[1px]  ml-3 mr-3 transition-all duration-300 group-hover:w-[70%]"></div>
-              </h1>
+          {/* TEXT + ICON */}
+          <div className="flex items-center gap-1">
 
-              {/* Subheading */}
-              {data.subHeading && (
-                <div className="absolute left-0 top-[40px]  mt-2 hidden group-hover:block bg-white text-gray-500 w-56 shadow-lg z-50">
-                  {data.subHeading.map((sub) => (
-                    <p
-                      key={sub.id}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    >
-                      {sub.title}
-                    </p>
-                  ))}
-                </div>
-              )}
+            {/* TEXT WRAPPER (IMPORTANT) */}
+            <div className="relative inline-block">
+              <span className="relative z-10">{data.title}</span>
+
+              {/* UNDERLINE (TEXT BASED) */}
+              <span
+                className="
+                  absolute
+                  left-0
+                  bottom-[-4px]
+                  h-[2px]
+                  w-[110%]
+                  bg-[#F4F4F4]
+                  transform
+                  scale-x-0
+                  origin-left
+                  transition-transform
+                  duration-300
+                  group-hover:scale-x-100
+                "
+              />
             </div>
-          ))}
-        </div>
+
+            {/* ARROW */}
+            <span className=" transition-transform duration-300 group-hover:rotate-180">
+              <RiArrowDropDownLine />
+            </span>
+
+          </div>
+        </h1>
+
+        {/* DROPDOWN */}
+        {data.subHeading && (
+          <div
+            className="
+              absolute
+              left-0
+              top-[55px]
+              bg-white
+              text-gray-500
+              w-56
+              shadow-lg
+              z-50
+              transform
+              translate-y-[12px]
+              opacity-0
+              pointer-events-none
+              transition-all
+              duration-500
+              ease-out
+              group-hover:translate-y-0
+              group-hover:opacity-100
+              group-hover:pointer-events-auto
+            "
+          >
+            {data.subHeading.map((sub) => (
+              <p
+                key={sub.id}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer hover:text-black"
+              >
+                {sub.title}
+              </p>
+            ))}
+          </div>
+        )}
+
       </div>
+    ))}
+
+  </div>
+</div>
+
     </>
   );
 }
