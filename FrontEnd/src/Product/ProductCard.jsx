@@ -98,7 +98,7 @@ function ProductCard({ product }) {
 
             {/* Tooltip */}
             <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-black text-white text-xs px-3 py-2 rounded opacity-0 group-hover/tooltip:opacity-100 transition-all duration-300 whitespace-nowrap
-              before:content-[''] before:absolute before:right-[-6px] before:top-1/2 before:-translate-y-1/2 before:border-y-6 before:border-y-transparent before:border-l-6 before:border-l-black">
+              before:content-[''] before:absolute before:right-1.5 before:top-1/2 before:-translate-y-1/2 before:border-y-6 before:border-y-transparent before:border-l-6 before:border-l-black">
               {isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
             </span>
           </div>
@@ -124,7 +124,7 @@ function ProductCard({ product }) {
 
             {/* Tooltip */}
             <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-black text-white text-xs px-3 py-2 rounded opacity-0 group-hover/tooltip:opacity-100 transition-all duration-300 whitespace-nowrap
-              before:content-[''] before:absolute before:right-[-6px] before:top-1/2 before:-translate-y-1/2 before:border-y-6 before:border-y-transparent before:border-l-6 before:border-l-black">
+              before:content-[''] before:absolute before:right-1.5 before:top-1/2 before:-translate-y-1/2 before:border-y-6 before:border-y-transparent before:border-l-6 before:border-l-black">
               Quick view
             </span>
           </div>
