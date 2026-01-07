@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Autoplay, Pagination } from "swiper/modules";
 import { HeroSectionSwiper } from "./HomeData/HeroSectionImg.js";
 import homeCollectionData from "./HomeData/homeCollectionData.js";
-import { homeOptionsData } from "./HomeData/homeOptionsData.js";
+import HomeOptionsData from "./HomeData/HomeOptionsData.js";
 import { getTheLookData } from "./HomeData/getTheLookData.js";
 
 function Home() {
@@ -63,7 +63,7 @@ function Home() {
           You always need options
         </p>
         <div className="grid grid-cols-4 gap-6 cursor-pointer">
-          {homeOptionsData.map((data) => (
+          {HomeOptionsData.map((data) => (
             <div key={data.id} className="rounded-xl overflow-hidden" onClick={() => Navigate(data.link)}>
               <img
                 src={data.img}
