@@ -1,4 +1,4 @@
-const footerNavigations = [
+export const footerNavigations = [
     {
         id: 1,
         title: "Company",
@@ -22,6 +22,5 @@ const footerNavigations = [
             { id: 5, title: "Terms & Conditions", link: "/terms-conditions" },
         ]
     }
-]
+];
 
-export default footerNavigations;

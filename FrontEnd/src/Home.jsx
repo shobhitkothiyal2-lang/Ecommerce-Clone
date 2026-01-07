@@ -3,14 +3,14 @@ import Header from "./Common/Header.jsx";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
+import { useNavigate } from "react-router-dom";
+
 
 import { Autoplay, Pagination } from "swiper/modules";
-import { HeroSectionSwiper } from "./Navigation/HeroSectionImg.js";
-import { useNavigate } from "react-router-dom";
+import { HeroSectionSwiper } from "./HomeData/HeroSectionImg.js";
+import homeCollectionData from "./HomeData/homeCollectionData.js";
+import { homeOptionsData } from "./HomeData/homeOptionsData.js";
 import { getTheLookData } from "./HomeData/getTheLookData.js";
-import { homeCollectionData } from "./HomeData/homeCollectionData.js";
-import { homeOptionData } from "./HomeData/homeOptionData.js";
-
 
 function Home() {
   const Navigate = useNavigate();
@@ -63,7 +63,7 @@ function Home() {
           You always need options
         </p>
         <div className="grid grid-cols-4 gap-6 cursor-pointer">
-          {homeOptionData.map((data) => (
+          {homeOptionsData.map((data) => (
             <div key={data.id} className="rounded-xl overflow-hidden" onClick={() => Navigate(data.link)}>
               <img
                 src={data.img}
@@ -95,7 +95,7 @@ function Home() {
                 src={data.img}
                 className="w-full h-[450px] object-cover rounded-xl overflow-hidden"
               />
-              <p className="absolute bottom-0 left-0 w-full text-center font-bold text-[14px] uppercase bg-white p-2">
+              <p className="absolute -bottom-px left-0 w-full text-center font-bold text-[14px] uppercase bg-white p-2">
                 Shop Now
               </p>
             </SwiperSlide>

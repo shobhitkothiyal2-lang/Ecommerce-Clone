@@ -1,5 +1,5 @@
-export const homeOptionData = [
-    {
+export const homeOptionsData = [
+  {
     id: 1,
     img: "https://uptownie.com/cdn/shop/files/1_3e532f5c-d4b0-4e03-8775-55a3e7501c65_960x.png?v=1762348678",
     title: "3 at ₹999",
@@ -23,4 +23,4 @@ export const homeOptionData = [
     title: "2 at ₹4900",
     link: "/",
   },
-]
+];
