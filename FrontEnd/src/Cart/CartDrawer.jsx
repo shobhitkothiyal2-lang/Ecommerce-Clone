@@ -436,7 +436,7 @@ function CartDrawer() {
                   {recommendedProducts.map((rec) => (
                     <div
                       key={rec.id}
-                      className="min-w-35 border border-gray-100 rounded-lg p-2 flex flex-col gap-2 relative bg-white"
+                      className="min-w-35  border border-gray-100 rounded-lg p-2 flex flex-col gap-2 relative bg-white"
                     >
                       <img
                         src={rec.variants[0].images[0]}
