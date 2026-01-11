@@ -3,11 +3,37 @@ import { HeaderNavigation } from "../Navigation/HeaderNavigations";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../Context/CartContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import AuthModal from "../Components/AuthModal/AuthModal.jsx";
 
 function Header() {
   const navigate = useNavigate();
   const { setIsCartOpen, wishlistItems, cartItems } = useCart();
+
+   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const checkLoginStatus = () => {
+    const token = localStorage.getItem("jwt");
+    setIsLoggedIn(!!token);
+  };
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
+  const handleUserClick = () => {
+    if (!isLoggedIn) {
+      setIsAuthModalOpen(true);
+    } else {
+      navigate("/profile"); // or orders / dashboard
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwt");
+    setIsLoggedIn(false);
+  };
 
   return (
     <>
@@ -23,7 +49,7 @@ function Header() {
           onClick={() => navigate("/")}
         >
           <img
-            class="inline-block "
+            className="inline-block "
             sizes="145px"
             srcSet="//uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_180x.png?v=1652706765 180w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_360x.png?v=1652706765 360w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_540x.png?v=1652706765 540w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_720x.png?v=1652706765 720w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_900x.png?v=1652706765 900w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_1080x.png?v=1652706765 1080w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_1296x.png?v=1652706765 1296w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_1512x.png?v=1652706765 1512w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_1728x.png?v=1652706765 1728w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_1944x.png?v=1652706765 1944w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_2160x.png?v=1652706765 2160w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_2376x.png?v=1652706765 2376w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_2592x.png?v=1652706765 2592w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_2808x.png?v=1652706765 2808w, //uptownie.com/cdn/shop/files/uptownie_logo_updated_v3_2880x.png?v=1652706765 2880w"
           ></img>
@@ -32,7 +58,7 @@ function Header() {
           <div className="relative group">
             {/* Search Icon */}
             <svg
-              class="w-4.5 h-4.5 flex"
+              className="w-4.5 h-4.5 flex"
               fill="currentColor"
               stroke="currentColor"
               xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +85,7 @@ function Header() {
             </div>
           </div>
 
-          <div className="relative group">
+          <div className="relative group cursor-pointer" onClick={handleUserClick}>
             {/* User Icon */}
 
             <svg
@@ -76,25 +102,18 @@ function Header() {
               ></path>
               <path
                 id="svgkp-path"
-                fill-rule="evenodd"
-                clip-rule="evenodd"
+                fillRule="evenodd"
+                clipRule="evenodd"
                 d="M16.6079 5.35819C16.4805 5.1933 16.3421 5.03582 16.1932 4.8869C15.2702 3.96387 14.0183 3.44531 12.7129 3.44531C11.4075 3.44531 10.1556 3.96387 9.2326 4.8869C8.30957 5.80993 7.79102 7.06183 7.79102 8.36719C7.79102 9.67255 8.30957 10.9244 9.2326 11.8475C9.48368 12.0986 9.75909 12.3197 10.0533 12.5086L11.0235 11.4503C10.7335 11.2914 10.4649 11.0911 10.227 10.8531C9.56766 10.1938 9.19727 9.29959 9.19727 8.36719C9.19727 7.43479 9.56766 6.54057 10.227 5.88127C10.8863 5.22196 11.7805 4.85156 12.7129 4.85156C13.6453 4.85156 14.5395 5.22196 15.1988 5.88127C15.3636 6.04604 15.5103 6.22549 15.6377 6.41654L16.6079 5.35819ZM20.6413 18.6497L19.6746 19.7132C20.1676 20.4122 20.4473 21.2264 20.4473 22.0781V23.8359C20.4473 24.2243 20.7621 24.5391 21.1504 24.5391C21.5387 24.5391 21.8535 24.2243 21.8535 23.8359V22.0781C21.8535 20.7863 21.4016 19.6103 20.6413 18.6497ZM12.3111 17.5078H10.3026C7.27113 17.5078 4.97852 19.6394 4.97852 22.0781V23.8359C4.97852 24.2243 4.66372 24.5391 4.27539 24.5391C3.88707 24.5391 3.57227 24.2243 3.57227 23.8359V22.0781C3.57227 18.6922 6.67684 16.1016 10.3026 16.1016H12.4885L12.3111 17.5078Z"
                 fill="currentColor"
                 stroke="currentColor"
               ></path>
             </svg>
-            {/* Tooltip */}
-            <div
-              className="absolute left-1/2 -translate-x-1/2 -bottom-12 
-                  opacity-0 translate-y-1
-                  group-hover:opacity-100 group-hover:-translate-y-1
-                  transition-all duration-300 ease-out
-                  pointer-events-none"
-            >
-              <div className="bg-black text-white text-xs px-3 py-2 rounded relative ">
-                User
-                {/* Arrow */}
-                <span
+           
+            <div className="absolute left-1/2 -translate-x-1/2 -bottom-12 opacity-0 group-hover:opacity-100 transition-all">
+              <div className="bg-black text-white text-xs px-3 py-2 rounded">
+                {isLoggedIn ? "Profile" : "Login"}
+                                <span
                   className="absolute left-1/2 -translate-x-1/2 -top-1 
                        w-2 h-2 bg-black rotate-45"
                 ></span>
@@ -255,6 +274,14 @@ function Header() {
           ))}
         </div>
       </div>
+      {/* AUTH MODAL */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => {
+          setIsAuthModalOpen(false);
+          checkLoginStatus();
+        }}
+      />
     </>
   );
 }

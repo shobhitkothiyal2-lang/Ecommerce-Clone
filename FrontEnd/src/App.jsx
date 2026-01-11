@@ -13,11 +13,17 @@ import ContactUs from "./ContactUs/ContactUs";
 import TermsAndConditions from "./TermsAndConditions/TermsAndConditions";
 import PaymentsAndOrders from "./PaymentsAndOrders/PaymentsAndOrders";
 import ShippingAndReturns from "./ShippingAndReturns/ShippingAndReturns";
-import PrivacyPolicy from "./PrivacyAndPolicy/PrivacyAndPolicy";
+import PrivacyPolicy from "./PrivacyPolicy/PrivacyPolicy";
 import CampusAmbassador from "./CampusAmbassador/CampusAmbassador";
 import SizeChart from "./SizeChart/SizeChart";
-import ScrollToTop from "../ScrollToTop";
-import QuickViewModal from "./Product/QuickViewModal";
+import AboutUs from "./AboutUs/AboutUs";
+import MyReturns from "./MyReturns/MyReturns";
+import Blog from "./Blog/Blog";
+import BlogDetails from "./Blog/BlogDetails";
+import ScrollToTop from "./ScrollTOTop";
+import Careers from "./Careers/Careers";
+import OrderHistory from "./OrderHistory/OrderHistory";
+import Addresses from "./OrderHistory/Addresses";
 
 function App() {
   return (
@@ -25,7 +31,6 @@ function App() {
       <FloatingButtons />
       <Headers />
       <CartDrawer />
-
       <ScrollToTop />
 
       <Routes>
@@ -45,6 +50,13 @@ function App() {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/cap" element={<CampusAmbassador />} />
         <Route path="/size-chart" element={<SizeChart />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/return" element={<MyReturns />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:id" element={<BlogDetails />} />
+        <Route path="/careers" element={<Careers />} />
+        <Route path="/orders" element={<OrderHistory />} />
+        <Route path="/account/addresses" element={<Addresses />} />
       </Routes>
 
       <Footer />
