@@ -1,29 +1,29 @@
 import React from "react";
 import { Router, Routes, Route } from "react-router-dom";
-import Footer from "./Common/Footer";
-import Headers from "./Common/Header"; // Make sure this file exists
-import Home from "./Home";
-import Product from "./Product/Product";
-import ProductDetails from "./Product/ProductDetails";
-import Wishlist from "./Wishlist/Wishlist";
-import { CartProvider } from "./Context/CartContext";
-import CartDrawer from "./Cart/CartDrawer";
-import FloatingButtons from "../Global/FloatingButtons";
-import ContactUs from "./ContactUs/ContactUs";
-import TermsAndConditions from "./TermsAndConditions/TermsAndConditions";
-import PaymentsAndOrders from "./PaymentsAndOrders/PaymentsAndOrders";
-import ShippingAndReturns from "./ShippingAndReturns/ShippingAndReturns";
-import PrivacyPolicy from "./PrivacyPolicy/PrivacyPolicy";
-import CampusAmbassador from "./CampusAmbassador/CampusAmbassador";
-import SizeChart from "./SizeChart/SizeChart";
-import AboutUs from "./AboutUs/AboutUs";
-import MyReturns from "./MyReturns/MyReturns";
-import Blog from "./Blog/Blog";
-import BlogDetails from "./Blog/BlogDetails";
-import ScrollToTop from "./ScrollTOTop";
-import Careers from "./Careers/Careers";
-import OrderHistory from "./OrderHistory/OrderHistory";
-import Addresses from "./OrderHistory/Addresses";
+import Footer from "./Common/Footer.jsx";
+import Headers from "./Common/Header.jsx"; // Make sure this file exists
+import Home from "./Home.jsx";
+import Product from "./Product/Product.jsx";
+import ProductDetails from "./Product/ProductDetails.jsx";
+import Wishlist from "./Wishlist/Wishlist.jsx";
+import { CartProvider } from "./Context/CartContext.jsx";
+import CartDrawer from "./Cart/CartDrawer.jsx";
+import FloatingButtons from "../Global/FloatingButtons.jsx";
+import ContactUs from "./ContactUs/ContactUs.jsx";
+import TermsAndConditions from "./TermsAndConditions/TermsAndConditions.jsx";
+import PaymentsAndOrders from "./PaymentsAndOrders/PaymentsAndOrders.jsx";
+import ShippingAndReturns from "./ShippingAndReturns/ShippingAndReturns.jsx";
+import PrivacyPolicy from "./PrivacyPolicy/PrivacyPolicy.jsx";
+import CampusAmbassador from "./CampusAmbassador/CampusAmbassador.jsx";
+import SizeChart from "./SizeChart/SizeChart.jsx";
+import AboutUs from "./AboutUs/AboutUs.jsx";
+import MyReturns from "./MyReturns/MyReturns.jsx";
+import Blog from "./Blog/Blog.jsx";
+import BlogDetails from "./Blog/BlogDetails.jsx";
+import ScrollToTop from "./ScrollToTop.jsx";
+import Careers from "./Careers/Careers.jsx";
+import OrderHistory from "./OrderHistory/OrderHistory.jsx";
+import Addresses from "./OrderHistory/Addresses.jsx";
 
 function App() {
   return (
