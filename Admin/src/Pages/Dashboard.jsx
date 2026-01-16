@@ -5,11 +5,11 @@ import Achivement from "../tables/Achivement";
 import MonthlyOverview from "../tables/MonthlyOverView";
 import SalesOverview from "../tables/WeeklyOverview";
 import TotalEarning from "../tables/TotalEarning";
-import { CardStatsVertical, customTheme } from "../them/customeThem";
+import { CardStatsVertical, customTheme } from "../Theme/customeThem";
 import CustomersTable from "../tables/CustomersTable";
 import { ThemeProvider } from "@mui/material/styles";
-import "../Views/Admin.css";
-import "../AdminPannel.css";
+import "../Styles/Admin.css";
+import "../Styles/AdminPannel.css";
 import RecentlyAddeddProducts from "../tables/RecentlyAddeddProducts";
 import SalesOverTime from "../tables/SalesOverTime";
 import RecentOrders from "../tables/RecentOrders";
@@ -46,7 +46,7 @@ const Dashboard = () => {
     <div className="bg-black min-h-screen text-gray-200">
       <ThemeProvider theme={customTheme}>
         <AdminPannel>
-          <div className="container mx-auto px-3 sm:px-4 py-4 max-w-400 ">
+          <div className="container mx-auto px-3 sm:px-4 py-4 max-w-[1600px] ">
             {/* Row 1 - Achievement & Monthly Overview */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
               <div className="lg:col-span-1">

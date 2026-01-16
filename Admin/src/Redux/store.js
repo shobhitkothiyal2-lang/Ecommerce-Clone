@@ -1,7 +1,7 @@
 // src/Redux/Store.js
 import { applyMiddleware, combineReducers, legacy_createStore } from "redux";
 import {thunk} from "redux-thunk"; // <-- default import
-import authReducer from "./Auth/Reducer";
+import authReducer from "../Redux/Auth/Reducer";
 import customerProductReducer from "./Customers/Product/Reducer";
 import productReducer from "./Admin/Product/Reducer";
 import adminOrderReducer from "./Admin/Orders/Reducer";

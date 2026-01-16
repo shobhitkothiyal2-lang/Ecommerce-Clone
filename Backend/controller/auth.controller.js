@@ -1,14 +1,13 @@
 import bcrypt from 'bcrypt'; // Import bcrypt for password hashing
 import jwt from 'jsonwebtoken'; // Import jwt for token generation
-import * as userservices from '../services/user.services.js';
+import * as authService from '../services/auth.service.js';
 import generateToken from '../config/jwtprovider.js';
 import transporter from '../config/transporter.js';
 
 //controller for user registration
 export const register = async(req,res) =>{
      try{
-        console.log("controller data", req.body);
-        const user = await userservices.registerUser(req.body); // call register service
+        const user = await authService.registerUser(req.body); // call register service
         const jwt =  generateToken(user._id); // generate token after register
        res.status(200).json({jwt, message:"Register Successfull"}); // response with jwt token
      } catch(err){
@@ -22,9 +21,9 @@ export const register = async(req,res) =>{
 export const login = async(req,res)=>{
    try{
       const {email,password} = req.body;  // get email and password from request body
-      const user = await userservices.getUserByEmail(email);  // call service to get user by email
+      const user = await authService.getUserByEmail(email);  // call service to get user by email
       if(!user){
-         return res.status(401).json({message:"User Is Not Registered With This Email "});
+         return res.status(400).json({message:"User Is Not Registered With This Email "});
       }
       const isPassword = await bcrypt.compare(password, user.password); // compare password
 

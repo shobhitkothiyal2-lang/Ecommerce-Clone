@@ -7,14 +7,24 @@ import Customers from "./Pages/Customers";
 import Blogs from "./Pages/Blogs";
 import AdminAddProduct from "./Pages/AdminAddProduct";
 import OrdersTable from "./Orders/OrdersTable";
-import Coupan from "./Coupan/Coupan";
+import Coupan from "./Coupons/Coupan";
 import Queries from "./Pages/Queries";
 import ProductDetails from "./Pages/ProductDetails";
+
+import AdminLogin from "./Pages/AdminLogin";
+import AdminPrivateRoute from "./routers/AdminPrivateRoute";
 
 const App = () => {
   return (
     <Routes>
-      <Route element={<AdminLayout />}>
+      <Route path="/login" element={<AdminLogin />} />
+      <Route
+        element={
+          <AdminPrivateRoute>
+            <AdminLayout />
+          </AdminPrivateRoute>
+        }
+      >
         <Route path="/" element={<Dashboard />} />
         <Route path="/products" element={<Products />} />
         <Route path="/customers" element={<Customers />} />

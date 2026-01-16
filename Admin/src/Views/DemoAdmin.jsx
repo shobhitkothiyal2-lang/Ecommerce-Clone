@@ -12,7 +12,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemButton from '@mui/material/ListItemButton';
 import Dashboard from './Admin';
 import { ThemeProvider } from '@emotion/react';
-import { customTheme } from '../them/customeThem';
+import { customTheme } from '../Theme/customeThem';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import InboxIcon from '@mui/icons-material/MoveToInbox';

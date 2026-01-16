@@ -1,132 +1,3 @@
-// import {
-//   REGISTER_REQUEST,
-//   REGISTER_SUCCESS,
-//   REGISTER_FAILURE,
-//   LOGIN_REQUEST,
-//   LOGIN_SUCCESS,
-//   LOGIN_FAILURE,
-//   GET_USER_REQUEST,
-//   GET_USER_SUCCESS,
-//   GET_USER_FAILURE,
-//   LOGOUT,
-// } from "./ActionTypes";
-
-// const initialState = {
-//   user: null,
-//   isLoading: false,
-//   error: null,
-// };
-
-// const authReducer = (state = initialState, action) => {
-//   switch (action.type) {
-//     case REGISTER_REQUEST:
-//     case LOGIN_REQUEST:
-//       return { ...state, isLoading: true, error: null };
-//     case REGISTER_SUCCESS:
-//       return { ...state, isLoading: false };
-//     case REGISTER_FAILURE:
-//     case LOGIN_FAILURE:
-//       return { ...state, isLoading: false, error: action.payload };
-//     case LOGIN_SUCCESS:
-//       return { ...state, isLoading: false };
-//     case GET_USER_REQUEST:
-//       return { ...state, isLoading: true, error: null };
-//     case GET_USER_SUCCESS:
-//       return { ...state, isLoading: false, user: action.payload };
-//     case GET_USER_FAILURE:
-//       return { ...state, isLoading: false, error: action.payload };
-//       case LOGOUT:
-//         localStorage.removeItem("jwt");
-//         return { ...state, jwt: null, user: null };
-//     default:
-//       return state;
-//   }
-// };
-
-// export default authReducer;
-
-
-// import {
-//   REGISTER_REQUEST,
-//   REGISTER_SUCCESS,
-//   REGISTER_FAILURE,
-//   LOGIN_REQUEST,
-//   LOGIN_SUCCESS,
-//   LOGIN_FAILURE,
-//   GET_USER_REQUEST,
-//   GET_USER_SUCCESS,
-//   GET_USER_FAILURE,
-//   GET_ALL_USERS_REQUEST,
-//   GET_ALL_USERS_SUCCESS,
-//   GET_ALL_USERS_FAILURE,
-//   LOGOUT,
-// } from "./ActionTypes";
-
-// const initialState = {
-//   user: null,
-//   userList: [],
-//   isLoading: false,
-//   error: null,
-// };
-
-// const authReducer = (state = initialState, action) => {
-//   switch (action.type) {
-//     case REGISTER_REQUEST:
-//     case LOGIN_REQUEST:
-//     case GET_USER_REQUEST:
-//     case GET_ALL_USERS_REQUEST:
-//       return {
-//         ...state,
-//         isLoading: true,
-//         error: null,
-//       };
-
-//     case REGISTER_SUCCESS:
-//     case LOGIN_SUCCESS:
-//       return {
-//         ...state,
-//         isLoading: false,
-//       };
-
-//     case REGISTER_FAILURE:
-//     case LOGIN_FAILURE:
-//     case GET_USER_FAILURE:
-//     case GET_ALL_USERS_FAILURE:
-//       return {
-//         ...state,
-//         isLoading: false,
-//         error: action.payload,
-//       };
-
-//     case GET_USER_SUCCESS:
-//       return {
-//         ...state,
-//         isLoading: false,
-//         user: action.payload, // ✅ Only updates user
-//       };
-
-//     case GET_ALL_USERS_SUCCESS:
-//       return {
-//         ...state,
-//         isLoading: false,
-//         userList: action.payload, // ✅ Only updates userList
-//       };
-
-//     case LOGOUT:
-//       localStorage.removeItem("jwt");
-//       return {
-//         ...state,
-//         user: null,
-//       };
-
-//     default:
-//       return state;
-//   }
-// };
-
-// export default authReducer;
-
-
 import {
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
@@ -145,11 +16,12 @@ import {
 
 const initialState = {
   user: null,
-  userList: [],      // always an array for mapping in components
+  userList: [], // always an array for mapping in components
   isLoading: false,
   error: null,
-  currentPage: 1,    // pagination state
+  currentPage: 1, // pagination state
   totalPages: 1,
+  jwt: localStorage.getItem("jwt") || null, // Initialize JWT
 };
 
 const authReducer = (state = initialState, action) => {
@@ -169,6 +41,8 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
+        jwt: action.payload.jwt, // Update JWT on login success
+        error: null,
       };
 
     case REGISTER_FAILURE:
@@ -193,7 +67,12 @@ const authReducer = (state = initialState, action) => {
       const payload = action.payload;
 
       // If payload is an object with `users` array (and pagination), use that
-      if (payload && typeof payload === "object" && !Array.isArray(payload) && Array.isArray(payload.users)) {
+      if (
+        payload &&
+        typeof payload === "object" &&
+        !Array.isArray(payload) &&
+        Array.isArray(payload.users)
+      ) {
         return {
           ...state,
           isLoading: false,
@@ -227,6 +106,7 @@ const authReducer = (state = initialState, action) => {
       localStorage.removeItem("jwt");
       return {
         ...state,
+        jwt: null,
         user: null,
       };
 

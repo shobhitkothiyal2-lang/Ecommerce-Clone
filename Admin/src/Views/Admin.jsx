@@ -8,7 +8,7 @@ import TotalEarning from "../tables/TotalEarning";
 import CardStatsVertical from "../../Styles/CardStatsVertical";
 import CustomersTable from "../tables/CustomersTable";
 import { ThemeProvider, createTheme } from "@mui/material";
-import { customTheme } from "../them/customeThem";
+import { customTheme } from "../Theme/customeThem";
 import "./Admin.css";
 import RecentlyAddeddProducts from "../tables/RecentlyAddeddProducts";
 import SalesOverTime from "../tables/SalesOverTime";

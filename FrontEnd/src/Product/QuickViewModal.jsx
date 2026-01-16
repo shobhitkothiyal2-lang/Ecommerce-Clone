@@ -13,10 +13,13 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination"; // Import Pagination CSS
 import { useCart } from "../Context/CartContext";
+import { useDispatch } from "react-redux";
+import { addItemToCart } from "../Redux/Customers/Cart/Action";
 
 function QuickViewModal({ product, onClose }) {
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+  const { addToCart, setIsCartOpen } = useCart();
+  const dispatch = useDispatch();
   const swiperRef = useRef(null);
 
   const [selectedColor, setSelectedColor] = useState(
@@ -46,13 +49,28 @@ function QuickViewModal({ product, onClose }) {
   };
 
   const handleAddToCart = () => {
-    addToCart(product, currentVariant, selectedSize, quantity);
+    // Dispatch Redux action
+    const reqData = {
+      productId: product._id || product.id, // Ensure correct ID field
+      size: selectedSize,
+      quantity: quantity,
+      variant: currentVariant,
+    };
+    dispatch(addItemToCart(reqData));
+
+    // Also update UI context if needed to open drawer
+    // The Redux success usually triggers a cart fetch.
+    // If context 'isCartOpen' depends on local state, we might need to set it.
+    // CartDrawer uses 'useCart().setIsCartOpen(true)' typically to show itself?
+    // Let's assume dispatching action is enough for data.
+    // But to OPEN the drawer:
+    setIsCartOpen(true);
     onClose();
   };
 
   if (!product) return null;
 
-  const basePrice = currentVariant?.basePrice || 0;
+  const basePrice = currentVariant?.price || 0; // Fix: use .price not .basePrice
   const discount = product.discountedPercent || 0;
   const discountedPrice = Math.round(basePrice - (basePrice * discount) / 100);
 
@@ -151,7 +169,7 @@ function QuickViewModal({ product, onClose }) {
                     key={size}
                     disabled={!isAvailable}
                     onClick={() => isAvailable && setSelectedSize(size)}
-                    className={`min-w-12 h-12 px-3 border rounded-full text-sm flex items-center justify-center transition-all ${
+                    className={`min-w-[40px] h-10 px-3 border rounded-full text-sm flex items-center justify-center transition-all ${
                       selectedSize === size
                         ? "bg-black text-white border-black"
                         : isAvailable
@@ -171,52 +189,28 @@ function QuickViewModal({ product, onClose }) {
             <p className="text-sm font-medium mb-2">
               Color: <span className="text-gray-500">{selectedColor}</span>
             </p>
-
             <div className="flex flex-wrap gap-3">
               {product.variants?.map((variant) => (
-                <div key={variant.color} className="relative group">
-                  <button
-                    onClick={() => {
-                      setSelectedColor(variant.color);
-                      setSelectedSize(""); // Reset size on color change
-                    }}
-                    className={`w-8 h-8 rounded-full border border-gray-200 shadow-sm transition-all hover:scale-110 ${
-                      selectedColor === variant.color
-                        ? "ring-2 ring-black ring-offset-2"
-                        : ""
-                    }`}
-                    style={{ backgroundColor: variant.hex }}
-                  />
-
-                  {/* Tooltip */}
-                  <div
-                    className="
-            absolute bottom-full left-1/2 -translate-x-1/2 mb-2
-            px-4 py-2 bg-black text-white text-xs rounded
-            opacity-0 group-hover:opacity-100
-            transition-all duration-300
-            whitespace-nowrap z-20
-          "
-                  >
-                    {variant.color}
-
-                    {/* Arrow */}
-                    <div
-                      className="
-              absolute top-full left-1/2 -translate-x-1/2
-              w-0 h-0
-              border-l-4 border-r-4 border-t-4
-              border-l-transparent border-r-transparent border-t-black
-            "
-                    />
-                  </div>
-                </div>
+                <button
+                  key={variant.color}
+                  onClick={() => {
+                    setSelectedColor(variant.color);
+                    setSelectedSize(""); // Reset size when color changes
+                  }}
+                  className={`relative w-8 h-8 rounded-full border border-gray-200 shadow-sm transition-all hover:scale-110 ${
+                    selectedColor === variant.color
+                      ? "ring-2 ring-black ring-offset-2"
+                      : ""
+                  }`}
+                  style={{ backgroundColor: variant.hex }}
+                  title={variant.color}
+                />
               ))}
             </div>
           </div>
 
           {/* Quantity and Add to Cart */}
-          <div className="">
+          <div className="mt-auto">
             <p className="text-sm font-medium mb-2">Quantity</p>
             <div className="flex items-center gap-4 mb-6">
               <div className="flex items-center border border-gray-300 rounded-md">
