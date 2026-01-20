@@ -30,10 +30,10 @@ const Topbar = ({ toggleSidebar }) => {
                 "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
             }}
           >
-            <span className="text-lg lg:text-xl font-bold text-white">VN</span>
+            <span className="text-lg lg:text-xl font-bold text-white">UP</span>
           </div>
           <h1 className="text-base lg:text-lg font-bold text-white tracking-wide hidden sm:block">
-            NOVA NECTAR
+            UPTOWNIE
           </h1>
         </div>
       </div>

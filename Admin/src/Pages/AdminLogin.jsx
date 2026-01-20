@@ -11,11 +11,16 @@ import {
   Paper,
   Alert,
   CircularProgress,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -24,6 +29,12 @@ const AdminLogin = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(login({ email, password }));
+  };
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
   };
 
   useEffect(() => {
@@ -52,7 +63,7 @@ const AdminLogin = () => {
             flexDirection: "column",
             alignItems: "center",
             bgcolor: "#1c1c1c",
-            color: "#ffffff",
+            color: "white",
             border: "1px solid #333",
           }}
         >
@@ -88,7 +99,7 @@ const AdminLogin = () => {
               onChange={(e) => setEmail(e.target.value)}
               InputLabelProps={{ style: { color: "#aaa" } }}
               InputProps={{
-                style: { color: "#ffffff" },
+                style: { color: "white" },
                 sx: {
                   "& .MuiOutlinedInput-notchedOutline": {
                     borderColor: "#444",
@@ -105,7 +116,7 @@ const AdminLogin = () => {
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
               value={password}
@@ -121,6 +132,19 @@ const AdminLogin = () => {
                     borderColor: "#666",
                   },
                 },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                      sx={{ color: "gray" }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
             <Button

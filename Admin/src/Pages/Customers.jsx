@@ -47,7 +47,7 @@ const Customers = () => {
   const [loadingOrders, setLoadingOrders] = React.useState(false);
 
   // Import API_BASE_URL and axios inside or use existing config
-  const API_BASE_URL = "http://localhost:5000"; // Or import from config
+  const API_BASE_URL = "http://localhost:8000"; // Or import from config
   const token = localStorage.getItem("jwt");
 
   const handleOpenOrders = async (userId) => {
