@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FiStar, FiPlus } from "react-icons/fi";
 import { useCart } from "../Context/CartContext";
-
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addItemToWishlist, removeItemFromWishlist } from "../Redux/Auth/actions";
 
@@ -40,9 +40,19 @@ function ProductCard({ product, onQuickView }) {
     }
   };
 
+  const [isQuickViewLoading, setIsQuickViewLoading] = useState(false);
+
   const handleQuickViewClick = (e) => {
     e.stopPropagation();
-    onQuickView && onQuickView(product);
+
+    if (isQuickViewLoading) return;
+
+    setIsQuickViewLoading(true);
+
+    setTimeout(() => {
+      setIsQuickViewLoading(false);
+      onQuickView && onQuickView(product);
+    }, 500); // small delay for UX
   };
 
   return (
@@ -55,11 +65,10 @@ function ProductCard({ product, onQuickView }) {
         <img
           src={firstVariant?.images[0]}
           alt={product.title}
-          className={`w-full h-full object-cover transition-all duration-700 ${
-            firstVariant?.images[1]
-              ? "group-hover:opacity-0 absolute inset-0"
-              : "group-hover:scale-105"
-          }`}
+          className={`w-full h-full object-cover transition-all duration-700 ${firstVariant?.images[1]
+            ? "group-hover:opacity-0 absolute inset-0"
+            : "group-hover:scale-105"
+            }`}
         />
         {firstVariant?.images[1] && (
           <img
@@ -76,25 +85,75 @@ function ProductCard({ product, onQuickView }) {
 
         {/* Action Buttons (Wishlist & Quick View) */}
         <div className="absolute top-3 right-3 flex flex-col gap-2 z-20 translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 ease-out">
-          <button
-            onClick={handleWishlistClick}
-            className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-colors ${
-              isWishlisted
+
+          {/* Wishlist Button */}
+          <div className="relative group/tooltip">
+            <button
+              onClick={handleWishlistClick}
+              className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-colors ${isWishlisted
                 ? "bg-black text-white"
                 : "bg-white text-black hover:bg-black hover:text-white"
-            }`}
-            title="Add to Wishlist"
-          >
-            <FiStar size={18} className={isWishlisted ? "fill-current" : ""} />
-          </button>
-          <button
-            onClick={handleQuickViewClick}
-            className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center shadow-md hover:bg-black hover:text-white transition-colors"
-            title="Quick View"
-          >
-            <FiPlus size={18} />
-          </button>
+                }`}
+            >
+              <FiStar
+                size={18}
+                className={isWishlisted ? "fill-current" : ""}
+              />
+            </button>
+
+            {/* Tooltip */}
+            <div className="absolute right-full top-1/2 -translate-y-1/2 mr-3
+      opacity-0 translate-x-2
+      group-hover/tooltip:opacity-100 group-hover/tooltip:translate-x-0
+      transition-all duration-300 ease-out
+      pointer-events-none">
+
+              <div className="relative bg-black text-white text-xs px-3 py-1 rounded-md whitespace-nowrap">
+                {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+
+                {/* Tooltip Arrow */}
+                <span className="absolute top-1/2 -right-1 w-2 h-2 bg-black rotate-45 -translate-y-1/2"></span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick View Button */}
+          <div className="relative group/tooltip">
+            <button
+              onClick={handleQuickViewClick}
+              disabled={isQuickViewLoading}
+              className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-colors
+      ${isQuickViewLoading
+                  ? "bg-black text-white cursor-not-allowed"
+                  : "bg-white text-black hover:bg-black hover:text-white"
+                }`}
+            >
+              {isQuickViewLoading ? (
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              ) : (
+                <FiPlus size={18} />
+              )}
+            </button>
+
+            {/* Tooltip */}
+            {!isQuickViewLoading && (
+              <div className="absolute right-full top-1/2 -translate-y-1/2 mr-3
+      opacity-0 translate-x-2
+      group-hover/tooltip:opacity-100 group-hover/tooltip:translate-x-0
+      transition-all duration-300 ease-out
+      pointer-events-none">
+
+                <div className="relative bg-black text-white text-xs px-3 py-1 rounded-md whitespace-nowrap">
+                  Quick View
+                  <span className="absolute top-1/2 -right-1 w-2 h-2 bg-black rotate-45 -translate-y-1/2"></span>
+                </div>
+              </div>
+            )}
+          </div>
+
+
         </div>
+
 
         {/* Select Options Button */}
         <button
@@ -127,13 +186,13 @@ function ProductCard({ product, onQuickView }) {
           {product.variants?.map((variant, index) => (
             <div key={index} className="relative group/swatch">
               <div
-                className="w-4 h-4 rounded-full border border-gray-300 transition-all group-hover/swatch:ring-1 group-hover/swatch:ring-offset-1 group-hover/swatch:ring-black cursor-pointer"
+                className="w-7 h-7 rounded-full border border-gray-300 transition-all group-hover/swatch:ring-1 group-hover/swatch:ring-offset-1 group-hover/swatch:ring-black cursor-pointer"
                 style={{ backgroundColor: variant.hex }}
               ></div>
               {/* Tooltip */}
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-[10px] rounded opacity-0 group-hover/swatch:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 w-auto">
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-2 py-1 bg-black text-white text-[10px] rounded opacity-0 group-hover/swatch:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 w-auto shadow-xl">
                 {variant.color}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-black"></div>
+                <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-black"></div>
               </div>
             </div>
           ))}

@@ -41,15 +41,13 @@ const AccordionItem = ({ title, isOpen, onToggle, children }) => (
     >
       <span className="font-medium text-gray-800">{title}</span>
       <FiChevronRight
-        className={`transform transition-transform duration-300 ${
-          isOpen ? "-rotate-90" : "rotate-90"
-        }`}
+        className={`transform transition-transform duration-300 ${isOpen ? "-rotate-90" : "rotate-90"
+          }`}
       />
     </button>
     <div
-      className={`grid transition-all duration-300 ease-in-out ${
-        isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-      }`}
+      className={`grid transition-all duration-300 ease-in-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
     >
       <div className="overflow-hidden">
         <div className="text-sm text-gray-600 leading-relaxed space-y-4 pb-4">
@@ -74,6 +72,7 @@ function ProductDetails() {
   const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
   const recommendedSwiperRef = useRef(null);
   const { setIsCartOpen } = useCart(); // Keep for opening drawer
+  const [isCopied, setIsCopied] = useState(false);
 
   const dispatch = useDispatch();
   const { product, products, loading } = useSelector((store) => store.product);
@@ -103,12 +102,25 @@ function ProductDetails() {
         setSelectedImage(defaultVariant.images[0]);
         // Set default size if available in stock
         // Check if stock is map or object
+        const stockData = defaultVariant.stock;
         const sizes =
-          product.variants[0].stock instanceof Map
-            ? Array.from(product.variants[0].stock.keys())
-            : Object.keys(product.variants[0].stock || {});
+          stockData instanceof Map
+            ? Array.from(stockData.keys())
+            : Object.keys(stockData || {});
 
-        if (sizes.length > 0) setSelectedSize(sizes[0]);
+        const firstAvailableSize = sizes.find((size) => {
+          const qty =
+            stockData instanceof Map
+              ? Number(stockData.get(size))
+              : Number(stockData?.[size]);
+          return qty > 0;
+        });
+
+        if (firstAvailableSize) {
+          setSelectedSize(firstAvailableSize);
+        } else if (sizes.length > 0) {
+          setSelectedSize(sizes[0]);
+        }
       }
 
       // Fetch similar products for recommendations
@@ -119,11 +131,25 @@ function ProductDetails() {
   const handleColorChange = (variant) => {
     setSelectedVariant(variant);
     setSelectedImage(variant.images[0]);
+    const stockData = variant.stock;
     const sizes =
-      variant.stock instanceof Map
-        ? Array.from(variant.stock.keys())
-        : Object.keys(variant.stock || {});
-    if (sizes.length > 0) setSelectedSize(sizes[0]);
+      stockData instanceof Map
+        ? Array.from(stockData.keys())
+        : Object.keys(stockData || {});
+
+    const firstAvailableSize = sizes.find((size) => {
+      const qty =
+        stockData instanceof Map
+          ? Number(stockData.get(size))
+          : Number(stockData?.[size]);
+      return qty > 0;
+    });
+
+    if (firstAvailableSize) {
+      setSelectedSize(firstAvailableSize);
+    } else if (sizes.length > 0) {
+      setSelectedSize(sizes[0]);
+    }
   };
 
   if (!product || !selectedVariant) {
@@ -144,6 +170,24 @@ function ProductDetails() {
 
   const handleIncreaseQuantity = () => {
     setQuantity(quantity + 1);
+  };
+
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: product.title,
+          text: `Check out this ${product.title} on Uptownie!`,
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      }
+    } catch (error) {
+      console.error("Error sharing:", error);
+    }
   };
 
   // Calculate price based on variant and discount
@@ -183,11 +227,10 @@ function ProductDetails() {
               {selectedVariant.images.map((img, index) => (
                 <div
                   key={index}
-                  className={`cursor-pointer border transition-all duration-300 aspect-3/4 ${
-                    selectedImage === img
-                      ? "border-black outline-1 outline-black"
-                      : "border-gray-200 hover:border-gray-400"
-                  }`}
+                  className={`cursor-pointer border transition-all duration-300 aspect-3/4 ${selectedImage === img
+                    ? "border-black outline-1 outline-black"
+                    : "border-gray-200 hover:border-gray-400"
+                    }`}
                   onClick={() => {
                     setSelectedImage(img);
                     swiperRef.current?.slideTo(index);
@@ -337,9 +380,8 @@ function ProductDetails() {
                       navigate("/login");
                     }
                   }}
-                  className={`p-2 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors ${
-                    isWishlisted ? "text-black fill-black" : "text-gray-600"
-                  }`}
+                  className={`p-2 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors ${isWishlisted ? "text-black fill-black" : "text-gray-600"
+                    }`}
                 >
                   <FiStar
                     size={20}
@@ -349,10 +391,46 @@ function ProductDetails() {
               </div>
             </div>
 
-            <div className="flex justify-end mb-4">
-              <button className="p-2 text-gray-600 hover:text-black transition-colors">
-                <FiShare2 size={24} />
-              </button>
+            {/* Average Rating & Share Row */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <div className="flex text-yellow-400 text-sm">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <FiStar
+                      key={star}
+                      fill={
+                        star <= Math.round(product.rating || 0)
+                          ? "currentColor"
+                          : "none"
+                      }
+                      className={
+                        star <= Math.round(product.rating || 0)
+                          ? "text-yellow-400"
+                          : "text-gray-300"
+                      }
+                    />
+                  ))}
+                </div>
+                <span className="text-sm text-gray-500">
+                  ({product.numReviews || 0} Reviews)
+                </span>
+              </div>
+
+              <div className="relative">
+                <button
+                  onClick={handleShare}
+                  className="p-2 text-gray-600 hover:text-black transition-colors rounded-full hover:bg-gray-100"
+                  aria-label="Share product"
+                >
+                  <FiShare2 size={20} />
+                </button>
+                {isCopied && (
+                  <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-[10px] rounded whitespace-nowrap z-10 animate-fade-in shadow-xl">
+                    Copied!
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-black"></div>
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center gap-4 mb-2">
@@ -398,14 +476,21 @@ function ProductDetails() {
                     return (
                       <div key={size} className="relative group">
                         <button
-                          onClick={() => setSelectedSize(size)}
-                          className={`min-w-12 h-12 flex items-center justify-center border font-medium transition-all duration-200 ${
-                            selectedSize === size
+                          onClick={() => stockQty > 0 && setSelectedSize(size)}
+                          disabled={stockQty <= 0}
+                          className={`min-w-14 h-14 flex items-center justify-center border rounded-full font-medium transition-all duration-200 relative overflow-hidden ${stockQty <= 0
+                            ? "border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed"
+                            : selectedSize === size
                               ? "border-black bg-black text-white"
                               : "border-gray-200 hover:border-black text-gray-900"
-                          } ${isLowStock ? "mb-2" : ""}`} // Add margin if low stock badge to prevent overlapping next row if wrapped tightly, though absolute positioning handles it mostly.
+                            } ${isLowStock ? "mb-2" : ""}`} // Add margin if low stock badge to prevent overlapping next row if wrapped tightly, though absolute positioning handles it mostly.
                         >
                           {size}
+                          {stockQty <= 0 && (
+                            <div className="absolute inset-0 flex justify-center items-center">
+                              <div className="w-full h-px bg-gray-300 rotate-45 transform origin-center scale-110"></div>
+                            </div>
+                          )}
                         </button>
                         {isLowStock && (
                           <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md whitespace-nowrap z-10 shadow-sm leading-none border border-white">
@@ -429,17 +514,16 @@ function ProductDetails() {
                   <div key={variant.color} className="relative group/swatch">
                     <button
                       onClick={() => handleColorChange(variant)}
-                      className={`w-5 h-5 rounded-full border border-gray-200 transition-all duration-300 ${
-                        selectedVariant.color === variant.color
-                          ? "ring-2 ring-black ring-offset-1"
-                          : "ring-1 ring-transparent hover:ring-black hover:ring-offset-1"
-                      }`}
+                      className={`w-9.5 h-9.5 rounded-full border border-gray-200 transition-all duration-300 ${selectedVariant.color === variant.color
+                        ? "ring-2 ring-black ring-offset-1"
+                        : "ring-1 ring-transparent hover:ring-black hover:ring-offset-1"
+                        }`}
                       style={{ backgroundColor: variant.hex }}
                     ></button>
                     {/* Tooltip */}
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-[10px] rounded opacity-0 group-hover/swatch:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 w-auto">
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-2 py-1 bg-black text-white text-[10px] rounded opacity-0 group-hover/swatch:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 w-auto shadow-xl">
                       {variant.color}
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-black"></div>
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-black"></div>
                     </div>
                   </div>
                 ))}
@@ -488,10 +572,6 @@ function ProductDetails() {
                   >
                     ADD TO BAG
                   </button>
-
-                  <button className="p-3 text-green-500 hover:text-green-600 transition-colors hover:bg-green-50 rounded-full border border-green-100">
-                    <FaWhatsapp size={28} />
-                  </button>
                 </div>
               </div>
             </div>
@@ -505,46 +585,52 @@ function ProductDetails() {
               >
                 <p className="mb-4">{product.description}</p>
                 {/* Other Information */}
-{Array.isArray(product.details) && product.details.length > 0 && (
-  <div className="mt-4">
-    <p className="font-bold underline mb-3">
-      Other Information:
-    </p>
+                {Array.isArray(product.details) && product.details.length > 0 && (
+                  <div className="mt-4">
+                    <p className="font-bold  underline mb-3">
+                      Other Information:
+                    </p>
 
-    <ul className="space-y-2">
-      {product.details.map((detail, index) => {
-        // Case 1: Heading only
-        if (detail.key && !detail.value) {
-          return (
-            <li
-              key={index}
-              className="text-sm font-semibold text-gray-800"
-            >
-              {detail.key}
-            </li>
-          );
-        }
+                    <ul className="list-none m-0 p-0">
+                      {product.details.map((detail, index) => {
+                        // Case 1: Heading only
+                        if (detail.key && !detail.value) {
+                          return (
+                            <li
+                              key={index}
+                              className="relative pl-6 mb-4 text-[14.5px] font-semibold text-gray-800"
+                            >
+                              <span className="absolute left-0 top-[9px] w-[6px] h-[6px] rounded-full bg-gray-400"></span>
+                              {detail.key}
+                            </li>
+                          );
+                        }
 
-        // Case 2: Heading + Value
-        if (detail.key && detail.value) {
-          return (
-            <li key={index} className="text-sm text-gray-700">
-              <span className="font-semibold">
-                {detail.key}:
-              </span>{" "}
-              {detail.value}
-            </li>
-          );
-        }
+                        // Case 2: Heading + Value
+                        if (detail.key && detail.value) {
+                          return (
+                            <li
+                              key={index}
+                              className="relative pl-6 mb-4 text-[14.5px] leading-[1.6] text-gray-600"
+                            >
+                              <span className="absolute left-0 top-[9px] w-[6px] h-[6px] rounded-full bg-gray-400"></span>
 
-        return null;
-      })}
-    </ul>
-  </div>
-)}
+                              <span className="font-semibold text-gray-700">
+                                {detail.key}-
+                              </span>{" "}
+                              {detail.value}
+                            </li>
+                          );
+                        }
+
+                        return null;
+                      })}
+                    </ul>
+
+                  </div>
+                )}
 
               </AccordionItem>
-
               <AccordionItem
                 title="Wash Care"
                 isOpen={activeAccordion === "washCare"}
@@ -580,20 +666,106 @@ function ProductDetails() {
             </div>
 
             <div className="mt-12 mb-8">
-              <h2 className="text-xl text-center mb-2">Customer Reviews</h2>
-              <div className="flex justify-center mb-2">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <FiStar key={i} className="text-black" />
-                ))}
+              <h2 className="text-xl font-bold mb-6">Customer Reviews</h2>
+
+              <div className="flex items-center gap-4 mb-8 bg-gray-50 p-4 rounded-lg">
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-3xl font-bold">
+                    {product.rating ? product.rating.toFixed(1) : "0.0"}
+                  </span>
+                  <div className="flex text-yellow-400">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <FiStar
+                        key={star}
+                        fill={
+                          star <= Math.round(product.rating || 0)
+                            ? "currentColor"
+                            : "none"
+                        }
+                        className={
+                          star <= Math.round(product.rating || 0)
+                            ? "text-yellow-400"
+                            : "text-gray-300"
+                        }
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm text-gray-500">
+                    {product.numReviews || 0} Reviews
+                  </span>
+                </div>
               </div>
-              <p className="text-center text-sm text-gray-500 mb-4">
-                Be the first to write a review
-              </p>
-              <div className="flex justify-center">
-                <button className="bg-zinc-800 text-white px-8 py-2 hover:bg-black transition-colors">
-                  Write a review
-                </button>
-              </div>
+
+              {product.reviews && product.reviews.length > 0 ? (
+                <div className="space-y-6">
+                  {product.reviews.map((review, index) => (
+                    <div
+                      key={index}
+                      className="border-b border-gray-100 last:border-0 pb-6"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="font-semibold text-gray-900">
+                          {review.name || "Verified User"}
+                        </div>
+                        <span className="text-gray-400 text-xs">
+                          {new Date(review.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="flex text-yellow-400 text-xs mb-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <FiStar
+                            key={star}
+                            fill={
+                              star <= review.rating ? "currentColor" : "none"
+                            }
+                            className={
+                              star <= review.rating
+                                ? "text-yellow-400"
+                                : "text-gray-300"
+                            }
+                          />
+                        ))}
+                      </div>
+                      {review.headline && (
+                        <h4 className="font-bold text-gray-900 text-sm mb-1">
+                          {review.headline}
+                        </h4>
+                      )}
+                      <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                        {review.comment}
+                      </p>
+
+                      {review.images && review.images.length > 0 && (
+                        <div className="flex gap-2 mb-2">
+                          {review.images.map((img, i) => (
+                            <div
+                              key={i}
+                              className="w-20 h-20 rounded-lg overflow-hidden border border-gray-100 cursor-pointer hover:opacity-90"
+                              onClick={() => {
+                                setSelectedImage(img);
+                                setIsModalOpen(true);
+                              }}
+                            >
+                              <img
+                                src={img}
+                                alt={`Review attachment ${i + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
+                  <p className="mb-2">No reviews yet.</p>
+                  <p className="text-sm">
+                    Buy this product and be the first to review!
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
