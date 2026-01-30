@@ -184,10 +184,10 @@ function QuickViewModal({ product, onClose }) {
                     disabled={!isAvailable}
                     onClick={() => isAvailable && setSelectedSize(size)}
                     className={`min-w-[50px] h-12.5 px-3 border rounded-full text-sm flex items-center justify-center transition-all ${selectedSize === size
-                        ? "bg-black text-white border-black"
-                        : isAvailable
-                          ? "bg-white text-gray-700 border-gray-300 hover:border-black"
-                          : "bg-gray-100 text-gray-300 border-gray-200 cursor-not-allowed box-decoration-slice"
+                      ? "bg-black text-white border-black"
+                      : isAvailable
+                        ? "bg-white text-gray-700 border-gray-300 hover:border-black"
+                        : "bg-gray-100 text-gray-300 border-gray-200 cursor-not-allowed box-decoration-slice"
                       }`}
                   >
                     {size}
@@ -204,20 +204,38 @@ function QuickViewModal({ product, onClose }) {
             </p>
             <div className="flex flex-wrap gap-2">
               {product.variants?.map((variant) => (
+                
                 <div key={variant.color} className="relative group/swatch">
                   <button
                     onClick={() => {
                       setSelectedColor(variant.color);
-                      // Auto-select first size for new color
                       const newSizes = getAvailableSizes(variant);
                       setSelectedSize(newSizes.length > 0 ? newSizes[0] : "");
                     }}
-                    className={`relative w-7 h-7 rounded-full border border-gray-200 shadow-sm transition-all hover:scale-110 ${selectedColor === variant.color
+                    className={`relative w-7 h-7 rounded-full border border-gray-200 shadow-sm bg-transparent
+                          transition-all hover:scale-110
+                            ${selectedColor === variant.color
                         ? "ring-2 ring-black ring-offset-1"
                         : "ring-1 ring-transparent hover:ring-black hover:ring-offset-1"
                       }`}
-                    style={{ backgroundColor: variant.hex }}
+style={
+  variant.type === "dual"
+    ? {
+        backgroundImage: `linear-gradient(
+          135deg,
+          ${(variant.colors && variant.colors[0]) || "#000000"} 50%,
+          ${(variant.colors && variant.colors[1]) || "#ffffff"} 50%
+        )`,
+      }
+    : {
+        backgroundColor: variant.hex,
+      }
+}
+
+
                   />
+
+
                   {/* Tooltip */}
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-2 py-1 bg-black text-white text-[10px] rounded opacity-0 group-hover/swatch:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 w-auto shadow-xl">
                     {variant.color}

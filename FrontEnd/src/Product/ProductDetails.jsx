@@ -363,33 +363,45 @@ function ProductDetails() {
 
           {/* Right Side - Product Details */}
           <div className="flex flex-col">
-            <div className="flex justify-between items-start">
-              <h1 className="text-3xl font-normal text-gray-900 mb-2">
-                {product.title}
-              </h1>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    if (user) {
-                      if (isWishlisted) {
-                        dispatch(removeItemFromWishlist(product._id));
-                      } else {
-                        dispatch(addItemToWishlist(product._id));
-                      }
-                    } else {
-                      navigate("/login");
-                    }
-                  }}
-                  className={`p-2 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors ${isWishlisted ? "text-black fill-black" : "text-gray-600"
-                    }`}
-                >
-                  <FiStar
-                    size={20}
-                    fill={isWishlisted ? "currentColor" : "none"}
-                  />
-                </button>
-              </div>
-            </div>
+  <div className="flex justify-between items-start">
+    <h1 className="text-3xl font-normal text-gray-900 mb-2">
+      {product.title}
+    </h1>
+    <div className="relative flex gap-2">
+      {/* Button container with group */}
+      <button
+        onClick={() => {
+          if (user) {
+            if (isWishlisted) {
+              dispatch(removeItemFromWishlist(product._id));
+            } else {
+              dispatch(addItemToWishlist(product._id));
+            }
+          } else {
+            navigate("/login");
+          }
+        }}
+        className={`group relative p-2 rounded-full border border-gray-200 transition-colors
+          ${isWishlisted ? "bg-black text-white" : "text-gray-600 hover:bg-black hover:text-white"}
+        `}
+      >
+        <FiStar
+          size={20}
+          fill={isWishlisted ? "currentColor" : "none"}
+          className="transition-colors duration-300"
+        />
+
+        {/* Tooltip sliding from left */}
+        <span className="absolute right-full top-1/2 -translate-y-1/2 mr-2 px-3 py-1 bg-black text-white text-sm rounded-md whitespace-nowrap 
+                         opacity-0 translate-x-[-10px] group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 ease-out z-50">
+          {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+
+          {/* Triangle pointer */}
+          <span className="absolute right-[-4px] top-1/2 -translate-y-1/2 w-2 h-2 bg-black rotate-45"></span>
+        </span>
+      </button>
+    </div>
+  </div>
 
             {/* Average Rating & Share Row */}
             <div className="flex items-center justify-between mb-6">
@@ -518,7 +530,21 @@ function ProductDetails() {
                         ? "ring-2 ring-black ring-offset-1"
                         : "ring-1 ring-transparent hover:ring-black hover:ring-offset-1"
                         }`}
-                      style={{ backgroundColor: variant.hex }}
+                      style={
+                        variant.type === "dual"
+                          ? {
+                            backgroundImage: `linear-gradient(
+          135deg,
+          ${(variant.colors && variant.colors[0]) || "#000000"} 50%,
+          ${(variant.colors && variant.colors[1]) || "#ffffff"} 50%
+        )`,
+                          }
+                          : {
+                            backgroundColor: variant.hex,
+                          }
+                      }
+
+
                     ></button>
                     {/* Tooltip */}
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-2 py-1 bg-black text-white text-[10px] rounded opacity-0 group-hover/swatch:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 w-auto shadow-xl">
@@ -799,7 +825,7 @@ function ProductDetails() {
                 slidesPerView: 5,
               },
             }}
-            className="w-full py-4 px-2"
+            className="w-full py-4 px-2 "
           >
             {products?.content
               ?.filter((p) => p.id !== product?.id)

@@ -123,11 +123,12 @@ function ProductCard({ product, onQuickView }) {
               onClick={handleQuickViewClick}
               disabled={isQuickViewLoading}
               className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-colors
-      ${isQuickViewLoading
+            ${isQuickViewLoading
                   ? "bg-black text-white cursor-not-allowed"
                   : "bg-white text-black hover:bg-black hover:text-white"
                 }`}
             >
+              {/* Loader */}
               {isQuickViewLoading ? (
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               ) : (

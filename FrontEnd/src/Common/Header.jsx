@@ -4,9 +4,12 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../Context/CartContext";
 import { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import AuthModal from "../Components/AuthModal/AuthModal.jsx";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { IoLogOutOutline, IoBagHandleOutline } from "react-icons/io5";
+import { logout } from "../Redux/Auth/actions.js";
 
 import {
   FaSearch,
@@ -17,17 +20,31 @@ import {
 
 function Header() {
   const navigate = useNavigate();
-  const { setIsCartOpen, wishlistItems, cartItems } = useCart();//cart context
+  const { setIsCartOpen } = useCart();//cart context
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);//auth modal state
   const [isLoadingOrders, setIsLoadingOrders] = useState(false);//orders loading state
   const [showProfileMenu, setShowProfileMenu] = useState(false);//profile menu state
+  const { user, token } = useSelector((store) => store.auth);
+  const { cartItems } = useSelector((store) => store.cart);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+const wishlistCount = user?.wishlist?.length || 0;
 
    const menuRef = useRef(null);//menu reference
+
+   const isLoggedIn = !!token;
+
+const handleLogout = () => {
+  dispatch(logout());
+  setShowProfileMenu(false);
+  navigate("/");
+};
 
    useEffect(() => {
     // Close menu when clicking outside
     function handleClickOutside(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) { 
         setShowProfileMenu(false);
       }
     }
@@ -37,16 +54,7 @@ function Header() {
     };
   }, []);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);//logged in state
-
-  const checkLoginStatus = () => {
-    const token = localStorage.getItem("jwt");
-    setIsLoggedIn(!!token);
-  };
-
-  useEffect(() => {
-    checkLoginStatus();
-  }, []);
+ 
 
   const handleUserClick = () => {
     if (!isLoggedIn) {
@@ -64,16 +72,10 @@ function Header() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("jwt");
-    setIsLoggedIn(false);
-  };
-
-  const [isSearchOpen, setIsSearchOpen] = useState(false);//search bar state
-
   const toggleSearch = () => {
-    setIsSearchOpen((prev) => !prev);
-  };
+  setIsSearchOpen((prev) => !prev);
+  setSearchTerm("");
+};
 
   return (
     <>
@@ -98,7 +100,7 @@ function Header() {
           <div className="relative ">
             {/* SEARCH ICON */}
             {!isSearchOpen && (
-              <div onClick={toggleSearch} className="cursor-pointer">
+              <div className="cursor-pointer" onClick={toggleSearch}>
                 <svg
                   className="w-4.5 h-4.5 flex"
                   fill="currentColor"
@@ -114,12 +116,30 @@ function Header() {
 
             {/* SEARCH BAR */}
             {isSearchOpen && (
-              <div className="absolute right-0 -top-3 -translate-y-1/2 w-200 bg-white border border-black flex items-center px-4 py-2 z-50">
+<div
+  className={`
+    absolute right-0 -top-3 -translate-y-1/2 w-200
+    bg-white border border-black flex items-center px-4 py-2 z-50
+    transition-all duration-500 ease-out
+    ${isSearchOpen
+      ? "opacity-100 translate-x-0"
+      : "opacity-0 -translate-x-10 pointer-events-none"}
+  `}
+>
                 <input
                   type="text"
                   placeholder="Search products"
                   className="w-full outline-none text-black text-sm"
                   autoFocus
+                  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter" && searchTerm.trim()) {
+      navigate(`/pdt/search?q=${searchTerm}`);
+      setIsSearchOpen(false);
+      setSearchTerm("");
+    }
+  }}
                 />
 
                 {/* SEARCH ICON */}
@@ -243,15 +263,15 @@ function Header() {
               fill="currentColor"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 576 512"
-              onClick={() => navigate("/Wishlist")}
+              onClick={() => navigate("/wishlist")}
             >
               <path d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path>
             </svg>
 
-            {wishlistItems.length > 0 && (
-              <span className="absolute -top-2 -right-3 bg-black text-white text-xs rounded-full px-1.5 py-0.5">
-                {wishlistItems.length}
-              </span>
+{wishlistCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-black text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
+                  {wishlistCount}
+                </span>
             )}
             {/* Tooltip */}
             <div
