@@ -3,10 +3,10 @@ import { thunk } from "redux-thunk";
 import { authReducer } from "./Auth/reducer";
 import { customerProductReducer } from "./Customers/Product/reducer";
 
-import { cartReducer } from "./Customers/Cart/Reducer";
-import { orderReducer } from "./Customers/Order/Reducer";
-import { couponReducer } from "./Customers/Coupon/Reducer";
-import { reviewReducer } from "./Customers/Review/Reducer";
+import { cartReducer } from "./Customers/Cart/Reducer.js";
+import { orderReducer } from "./Customers/Order/Reducer.js";
+import { couponReducer } from "./Customers/Coupon/Reducer.js";
+import { reviewReducer } from "./Customers/Review/Reducer.js";
 
 const rootReducer = combineReducers({
   auth: authReducer,
