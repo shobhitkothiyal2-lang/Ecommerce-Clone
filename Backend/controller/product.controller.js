@@ -19,6 +19,33 @@ const createProduct = async (req, res) => {
       }
     }
 
+    // 🔥 HANDLE BLACK & WHITE VARIANT
+if (productData.variants && Array.isArray(productData.variants)) {
+  productData.variants = productData.variants.map((variant) => {
+    const colorName = variant.color
+      ?.replace(/\s+/g, "")
+      .toLowerCase();
+
+    // Black & White case
+    if (colorName === "blackandwhite") {
+      return {
+        ...variant,
+        type: "dual",
+        colors: ["#000000", "#ffffff"],
+        hex: undefined, // solid color ke liye hota hai
+      };
+    }
+
+    // Normal solid colors
+    return {
+      ...variant,
+      type: "solid",
+      hex: variant.hex,
+    };
+  });
+}
+
+
     if (typeof productData.size === "string") {
       try {
         productData.sizes = JSON.parse(productData.size);
