@@ -2,11 +2,10 @@ import { applyMiddleware, combineReducers, legacy_createStore } from "redux";
 import { thunk } from "redux-thunk";
 import { authReducer } from "./Auth/reducer";
 import { customerProductReducer } from "./Customers/Product/reducer";
-
-import { cartReducer } from "./Customers/Cart/Reducer.js";
 import { orderReducer } from "./Customers/Order/Reducer.js";
 import { couponReducer } from "./Customers/Coupon/Reducer.js";
 import { reviewReducer } from "./Customers/Review/Reducer.js";
+import { cartReducer} from "./Customers/Cart/Reducer.js"
 
 const rootReducer = combineReducers({
   auth: authReducer,
