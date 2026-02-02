@@ -82,6 +82,7 @@ const addCartItem = async (userId, req) => {
       product._id,
       req.size,
       userId,
+      req.variant?.color
     );
 
     if (!isPresent) {
@@ -102,7 +103,7 @@ const addCartItem = async (userId, req) => {
       const cartItemData = {
         product: product._id,
         cart: cart._id,
-        quantity: 1,
+        quantity: req.quantity || 1,
         userId,
         price: price,
         discountedPrice: discountedPrice,
@@ -117,8 +118,8 @@ const addCartItem = async (userId, req) => {
       return createdCartItem; // Or return updated cart? Usually return generic success or updated cart.
     }
 
-    // Item Exists -> Increment Quantity
-    const newQuantity = isPresent.quantity + 1;
+    // Item Exists -> Add requested quantity
+    const newQuantity = isPresent.quantity + (req.quantity || 1);
 
     // Update logic handled by cartItemService which recalculates prices
     const updatedCartItem = await cartItemService.updateCartItem(

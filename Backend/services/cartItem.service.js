@@ -43,14 +43,20 @@ const updateCartItem = async (userId, cartItemId, cartItemData) => {
   }
 };
 
-const isCartItemExist = async (cart, product, size, userId) => {
+const isCartItemExist = async (cart, product, size, userId, color) => {
   try {
-    const cartItem = await CartItem.findOne({
+    const query = {
       cart: cart,
       product: product,
       size: size,
       userId: userId,
-    });
+    };
+
+    if (color) {
+      query["variant.color"] = color;
+    }
+
+    const cartItem = await CartItem.findOne(query);
     return cartItem;
   } catch (error) {
     throw new Error(error.message);

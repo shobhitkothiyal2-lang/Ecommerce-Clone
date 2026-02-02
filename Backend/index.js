@@ -62,6 +62,9 @@ app.use("/api/blogs", blogRoutes);
 import couponRoutes from "./routes/coupon.route.js";
 app.use("/api/coupons", couponRoutes);
 
+import stockNotificationRoutes from "./routes/stockNotification.routes.js";
+app.use("/api/stock-notifications", stockNotificationRoutes);
+
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error("Globar Error Handler:", err);

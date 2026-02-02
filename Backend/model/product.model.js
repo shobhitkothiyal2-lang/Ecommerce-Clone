@@ -56,16 +56,24 @@ const productSchema = new mongoose.Schema({
     type: String,
   },
   variants: [
-    {
-      color: String,
-      hex: String,
-      price: Number,
-      images: [String],
-      stock: {
-        type: mongoose.Schema.Types.Mixed, // Change to Mixed to allow Map or Object initially
-      },
+  {
+    color: { type: String, required: true }, // "Red & Green"
+
+    // SINGLE COLOR
+    hex: { type: String, default: "" },
+
+    // DUAL COLOR (NEW 🔥)
+    colors: { type: [String], default: [] }, // ["#ff0000", "#00ff00"]
+
+    price: Number,
+    images: [String],
+
+    stock: {
+      type: mongoose.Schema.Types.Mixed, // keep as-is
     },
-  ],
+  },
+],
+
   details: {
     type: mongoose.Schema.Types.Mixed,
     default: {},

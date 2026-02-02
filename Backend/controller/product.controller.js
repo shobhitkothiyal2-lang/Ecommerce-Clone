@@ -19,31 +19,31 @@ const createProduct = async (req, res) => {
       }
     }
 
-    // 🔥 HANDLE BLACK & WHITE VARIANT
-if (productData.variants && Array.isArray(productData.variants)) {
+// ✅ NORMALIZE VARIANTS COLORS (ADMIN-DRIVEN)
+if (Array.isArray(productData.variants)) {
   productData.variants = productData.variants.map((variant) => {
-    const colorName = variant.color
-      ?.replace(/\s+/g, "")
-      .toLowerCase();
+    const isDual =
+      Array.isArray(variant.colors) && variant.colors.length === 2;
 
-    // Black & White case
-    if (colorName === "blackandwhite") {
+    if (isDual) {
       return {
         ...variant,
         type: "dual",
-        colors: ["#000000", "#ffffff"],
-        hex: undefined, // solid color ke liye hota hai
+        colors: variant.colors,
+        hex: "", // IMPORTANT: clear solid color
       };
     }
 
-    // Normal solid colors
+    // SINGLE COLOR
     return {
       ...variant,
       type: "solid",
-      hex: variant.hex,
+      hex: variant.hex || "#000000",
+      colors: [], // IMPORTANT: clear dual colors
     };
   });
 }
+
 
 
     if (typeof productData.size === "string") {
