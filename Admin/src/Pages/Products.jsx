@@ -440,22 +440,45 @@ const ProductsTable = () => {
                     }}
                   >
                     <TableCell>
-                      <Avatar
-                        alt={item.title}
-                        src={
-                          (Array.isArray(item.images) && item.images.length > 0)
-                            ? item.images[0]
-                            : (item.variants?.[0]?.images?.[0] || (typeof item.images === 'string' ? item.images : (item.imageUrl?.[0] || item.imageUrl)))
+                      <Box
+                        onClick={() =>
+                          navigate(`/product-details/${item._id}`, {
+                            state: { product: item },
+                          })
                         }
-                        variant="rounded"
                         sx={{
-                          width: 65,
-                          height: 65,
+                          width: 70,
+                          height: 70,
+                          borderRadius: "12px",
+                          overflow: "hidden",
                           border: "1px solid #3f3f46",
                           bgcolor: "#27272a",
-                          "& img": { objectFit: "cover" }
+                          cursor: "pointer",
+                          transition: "all 0.3s ease",
+                          position: "relative",
+                          "&:hover": {
+                            transform: "scale(1.15) rotate(2deg)",
+                            boxShadow: "0 15px 30px rgba(0,0,0,0.6)",
+                            borderColor: "#6366f1", // Indigo 500
+                            zIndex: 10,
+                          },
                         }}
-                      />
+                      >
+                        <img
+                          alt={item.title}
+                          src={
+                            (Array.isArray(item.images) && item.images.length > 0)
+                              ? item.images[0]
+                              : (item.variants?.[0]?.images?.[0] || (typeof item.images === 'string' ? item.images : (item.imageUrl?.[0] || item.imageUrl)))
+                          }
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            transition: "transform 0.5s ease"
+                          }}
+                        />
+                      </Box>
                     </TableCell>
 
                     <TableCell

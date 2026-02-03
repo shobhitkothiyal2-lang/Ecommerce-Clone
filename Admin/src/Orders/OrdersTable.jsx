@@ -71,9 +71,10 @@ const OrdersTable = () => {
   const [adminNotes, setAdminNotes] = useState("");
   const [updatingOrderId, setUpdatingOrderId] = useState(null);
 
-  const handleViewPaymentHistory = (userId, orderId) => {
-    dispatch(getPaymentHistory(userId, orderId)); // Redux action
-    setShowPaymentModal(true); // Open modal
+  const handleViewPaymentHistory = (order) => {
+    setSelectedOrder(order);
+    dispatch(getPaymentHistory(order.user._id, order._id));
+    setShowPaymentModal(true);
   };
 
   function handlePaginationChange(event, value) {
@@ -301,7 +302,7 @@ const OrdersTable = () => {
                 </p>
                 <p>
                   <strong className="text-white">Payment Method:</strong>{" "}
-                  {selectedOrder.paymentDetails?.paymentMethod}
+                  {selectedOrder.paymentDetails?.paymentMethod || "Razorpay"}
                 </p>
               </div>
               <hr className="my-4 border-gray-700" />
@@ -435,6 +436,17 @@ const OrdersTable = () => {
               Payment History
             </h2>
 
+            {selectedOrder?.user && (
+              <div className="mb-4 p-3 bg-zinc-800 rounded-lg border border-zinc-700">
+                <p className="text-sm text-gray-300">
+                  <strong className="text-white">Customer:</strong> {selectedOrder.user.firstName} {selectedOrder.user.lastName}
+                </p>
+                <p className="text-sm text-gray-300">
+                  <strong className="text-white">Email:</strong> {selectedOrder.user.email}
+                </p>
+              </div>
+            )}
+
             {loading ? (
               <p className="text-center text-gray-400">Loading...</p>
             ) : error ? (
@@ -471,23 +483,6 @@ const OrdersTable = () => {
                       {new Date(payment.paidAt).toLocaleString()}
                     </p>
 
-                    {/* Show user snapshot */}
-                    {payment.userSnapshot && (
-                      <>
-                        <p className="mt-2 font-semibold text-white">
-                          Customer Details
-                        </p>
-                        <p>
-                          <strong className="text-white">Name:</strong>{" "}
-                          {payment.userSnapshot.firstName}{" "}
-                          {payment.userSnapshot.lastName}
-                        </p>
-                        <p>
-                          <strong className="text-white">Email:</strong>{" "}
-                          {payment.userSnapshot.email}
-                        </p>
-                      </>
-                    )}
                   </li>
                 ))}
               </ul>
@@ -946,7 +941,7 @@ const OrdersTable = () => {
                         variant="outlined"
                         size="small"
                         onClick={() =>
-                          handleViewPaymentHistory(item.user._id, item._id)
+                          handleViewPaymentHistory(item)
                         }
                         sx={{ color: "white", borderColor: "gray.600" }}
                       >

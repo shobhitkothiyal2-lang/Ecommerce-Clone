@@ -109,6 +109,7 @@ const AddProductForm = ({ readOnly = false }) => {
           return {
             color: v.color || "",
             hex: v.hex || "#000000",
+            manuallyOutOfStock: v.manuallyOutOfStock || false,
             colors:
               Array.isArray(v.colors) && v.colors.length === 2
                 ? v.colors
@@ -166,6 +167,7 @@ const AddProductForm = ({ readOnly = false }) => {
       {
         color: "",
         hex: "#000000",
+        manuallyOutOfStock: false,
         colors: ["#000000", "#ffffff"],
         basePrice: formData.discountedPrice || "", // Default to main price
         files: [],
@@ -450,6 +452,7 @@ const AddProductForm = ({ readOnly = false }) => {
           price: Number(v.basePrice) || 0,
           stock: stockMap,
           images: existingImages, // Send existing images to backend
+          manuallyOutOfStock: v.manuallyOutOfStock || false,
         };
       });
 
@@ -468,6 +471,9 @@ const AddProductForm = ({ readOnly = false }) => {
         payload.append("productId", formData._id);
         await dispatch(updateProduct(payload));
         setSuccessMessage("Product Updated!");
+        setTimeout(() => {
+          navigate("/products");
+        }, 500);
       } else {
         await dispatch(createProduct(payload));
         setSuccessMessage("Product Created Successfully!");
@@ -776,6 +782,70 @@ const AddProductForm = ({ readOnly = false }) => {
                     required
                   />
                 </div>
+
+                {/* Manual Stock Override - Premium Toggle */}
+                <div className="mt-6 p-4 rounded-lg bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 hover:border-indigo-500/30 transition-all duration-300">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <label htmlFor={`manual-oos-${vIndex}`} className="block text-sm font-semibold text-gray-200 mb-1 cursor-pointer">
+                        IS This Color Out OF Stock
+                      </label>
+                      <p className="text-xs text-gray-500">
+                        {variant.manuallyOutOfStock
+                          ? "This color is marked as unavailable"
+                          : "Toggle to mark this color as out of stock"}
+                      </p>
+                    </div>
+
+                    {/* Toggle Switch */}
+                    <button
+                      type="button"
+                      id={`manual-oos-${vIndex}`}
+                      onClick={() => {
+                        const newValue = !variant.manuallyOutOfStock;
+                        handleVariantChange(vIndex, "manuallyOutOfStock", newValue);
+
+                        // If marking as out of stock, reset all quantities to 0
+                        if (newValue) {
+                          const updatedVariants = [...variants];
+                          updatedVariants[vIndex].stock = updatedVariants[vIndex].stock.map(s => ({
+                            ...s,
+                            quantity: 0
+                          }));
+                          setVariants(updatedVariants);
+                        }
+                      }}
+                      className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-zinc-900 ${variant.manuallyOutOfStock
+                        ? 'bg-gradient-to-r from-red-500 to-red-600 shadow-lg shadow-red-500/50'
+                        : 'bg-zinc-700 hover:bg-zinc-600'
+                        }`}
+                    >
+                      <span
+                        className={`inline-flex h-6 w-6 items-center justify-center transform rounded-full bg-white shadow-lg transition-all duration-300 ${variant.manuallyOutOfStock ? 'translate-x-7' : 'translate-x-1'
+                          }`}
+                      >
+                        {variant.manuallyOutOfStock ? (
+                          <svg className="h-3 w-3 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                          </svg>
+                        ) : (
+                          <svg className="h-3 w-3 text-zinc-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </span>
+                    </button>
+                  </div>
+
+                  {/* Status Badge */}
+                  {variant.manuallyOutOfStock && (
+                    <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20">
+                      <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                      <span className="text-xs font-bold text-red-400 uppercase tracking-wider">Out of Stock</span>
+                    </div>
+                  )}
+                </div>
+
                 <div>
                   <label className="block text-sm mb-1 text-gray-400">
                     Color Type
@@ -941,7 +1011,7 @@ const AddProductForm = ({ readOnly = false }) => {
                           )
                         }
                         className="w-20 bg-zinc-800 border border-zinc-600 rounded px-2 py-1 text-center disabled:opacity-50"
-                        disabled={readOnly}
+                        disabled={readOnly || variant.manuallyOutOfStock}
                       />
                       <input
                         type="number"
@@ -956,7 +1026,7 @@ const AddProductForm = ({ readOnly = false }) => {
                           )
                         }
                         className="w-20 bg-zinc-800 border border-zinc-600 rounded px-2 py-1 text-center disabled:opacity-50"
-                        disabled={readOnly}
+                        disabled={readOnly || variant.manuallyOutOfStock}
                       />
                       {!readOnly && (
                         <button

@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "./Layout/AdminLayout";
 import Dashboard from "./Pages/Dashboard";
 import Products from "./Pages/Products";
@@ -31,6 +31,7 @@ const App = () => {
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/add-product" element={<AdminAddProduct />} />
         <Route path="/admin/update-product" element={<AdminAddProduct readOnly={true} />} />
+        <Route path="/admin/products" element={<Navigate to="/products" replace />} />
         <Route path="orders" element={<OrdersTable />} />
         <Route path="create-coupon" element={<Coupan />} />
         <Route path="/queries" element={<Queries />} />
