@@ -557,19 +557,30 @@ function CartDrawer() {
                                                                     {/* Size Options Menu (Drop Down Menu) */}
                                                                     {activeDropdown?.itemId === item._id && activeDropdown?.type === 'size' && (
                                                                         <div className="absolute left-0 top-full mt-2 w-32 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] z-[100] py-2 overflow-hidden animate-in fade-in zoom-in-95 duration-200 ring-1 ring-black/5">
-                                                                            {Object.keys(activeVariant.stock || {}).map((sz) => (
-                                                                                <button
-                                                                                    key={sz}
-                                                                                    onClick={() => {
-                                                                                        handleUpdateSize(item._id, sz);
-                                                                                        setActiveDropdown(null);
-                                                                                    }}
-                                                                                    className={`w-full text-left px-4 py-2.5 text-[10px] font-black transition-all flex items-center justify-between group/opt ${item.size === sz ? 'bg-black text-white' : 'hover:bg-stone-50 text-gray-600 hover:text-black focus:bg-stone-100'}`}
-                                                                                >
-                                                                                    <span className="transition-transform group-hover/opt:translate-x-0.5">{sz}</span>
-                                                                                    {item.size === sz && <div className="w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_5px_rgba(255,255,255,0.5)]" />}
-                                                                                </button>
-                                                                            ))}
+                                                                            {/* Out Of Stock */}
+                                                                            {Object.entries(activeVariant.stock || {}).map(([sz, qty]) => {
+                                                                                const isOOS = qty <= 0;
+                                                                                return (
+                                                                                    <button
+                                                                                        key={sz}
+                                                                                        disabled={isOOS}
+                                                                                        onClick={() => {
+                                                                                            if (!isOOS) {
+                                                                                                handleUpdateSize(item._id, sz);
+                                                                                                setActiveDropdown(null);
+                                                                                            }
+                                                                                        }}
+                                                                                        className={`w-full text-left px-4 py-2.5 text-[10px] font-black transition-all flex items-center justify-between group/opt ${isOOS ? 'opacity-40 cursor-not-allowed bg-stone-50' :
+                                                                                            item.size === sz ? 'bg-black text-white' : 'hover:bg-stone-50 text-gray-600 hover:text-black focus:bg-stone-100'
+                                                                                            }`}
+                                                                                    >
+                                                                                        <span className="transition-transform group-hover/opt:translate-x-0.5">
+                                                                                            {sz} {isOOS && <span className="ml-1 text-[8px] font-normal text-red-500">(Out of Stock)</span>}
+                                                                                        </span>
+                                                                                        {item.size === sz && !isOOS && <div className="w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_5px_rgba(255,255,255,0.5)]" />}
+                                                                                    </button>
+                                                                                );
+                                                                            })}
                                                                         </div>
                                                                     )}
                                                                 </div>
@@ -606,29 +617,35 @@ function CartDrawer() {
                                                                     {/* Color Options Menu */}
                                                                     {activeDropdown?.itemId === item._id && activeDropdown?.type === 'color' && (
                                                                         <div className="absolute left-0 top-full mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-[0_20px_50px_rgba(0,0,0,0.1)] z-[100] py-2 overflow-hidden animate-in fade-in zoom-in-95 duration-200 max-h-56 overflow-y-auto custom-scrollbar ring-1 ring-black/5">
-                                                                            {fullProduct.variants?.map((v) => (
-                                                                                <button
-                                                                                    key={v._id}
-                                                                                    onClick={() => {
-                                                                                        handleUpdateColor(item._id, v._id);
-                                                                                        setActiveDropdown(null);
-                                                                                    }}
-                                                                                    className={`w-full text-left px-4 py-2.5 text-[10px] font-black transition-all flex items-center gap-3 group/opt ${activeVariant._id === v._id ? 'bg-black text-white' : 'hover:bg-stone-50 text-gray-600 hover:text-black focus:bg-stone-100'}`}
-                                                                                >
-                                                                                    <div className="w-3 h-3 rounded-full border border-white shadow-[0_0_3px_rgba(0,0,0,0.2)] ring-1 ring-black/5 transition-transform group-hover/opt:scale-110 relative overflow-hidden shrink-0">
-                                                                                        {Array.isArray(v.colors) && v.colors.length === 2 ? (
-                                                                                            <>
-                                                                                                <span className="absolute inset-0" style={{ backgroundColor: v.colors[1] }} />
-                                                                                                <span className="absolute inset-0" style={{ backgroundColor: v.colors[0], clipPath: "ellipse(95% 70% at 0% 0%)" }} />
-                                                                                            </>
-                                                                                        ) : (
-                                                                                            <div className="w-full h-full" style={{ backgroundColor: v.hex || v.colors?.[0] || "#000" }} />
-                                                                                        )}
-                                                                                    </div>
-                                                                                    <span className="capitalize flex-1 truncate transition-transform group-hover/opt:translate-x-0.5">{v.color}</span>
-                                                                                    {activeVariant._id === v._id && <div className="w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_5px_rgba(255,255,255,0.5)]" />}
-                                                                                </button>
-                                                                            ))}
+                                                                            {fullProduct.variants?.map((v) => {
+                                                                                const isVariantOOS = v.manuallyOutOfStock || (!v.stock || Object.values(v.stock).every(q => Number(q) <= 0));
+                                                                                return (
+                                                                                    <button
+                                                                                        key={v._id}
+                                                                                        disabled={isVariantOOS}
+                                                                                        onClick={() => {
+                                                                                            handleUpdateColor(item._id, v._id);
+                                                                                            setActiveDropdown(null);
+                                                                                        }}
+                                                                                        className={`w-full text-left px-4 py-2.5 text-[10px] font-black transition-all flex items-center gap-3 group/opt ${activeVariant._id === v._id ? 'bg-black text-white' : 'hover:bg-stone-50 text-gray-600 hover:text-black focus:bg-stone-100'}`}
+                                                                                    >
+                                                                                        <div className="w-3 h-3 rounded-full border border-white shadow-[0_0_3px_rgba(0,0,0,0.2)] ring-1 ring-black/5 transition-transform group-hover/opt:scale-110 relative overflow-hidden shrink-0">
+                                                                                            {Array.isArray(v.colors) && v.colors.length === 2 ? (
+                                                                                                <>
+                                                                                                    <span className="absolute inset-0" style={{ backgroundColor: v.colors[1] }} />
+                                                                                                    <span className="absolute inset-0" style={{ backgroundColor: v.colors[0], clipPath: "ellipse(95% 70% at 0% 0%)" }} />
+                                                                                                </>
+                                                                                            ) : (
+                                                                                                <div className="w-full h-full" style={{ backgroundColor: v.hex || v.colors?.[0] || "#000" }} />
+                                                                                            )}
+                                                                                        </div>
+                                                                                        <span className="capitalize flex-1 truncate transition-transform group-hover/opt:translate-x-0.5">
+                                                                                            {v.color} {isVariantOOS && "(Out of Stock)"}
+                                                                                        </span>
+                                                                                        {activeVariant._id === v._id && <div className="w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_5px_rgba(255,255,255,0.5)]" />}
+                                                                                    </button>
+                                                                                );
+                                                                            })}
                                                                         </div>
                                                                     )}
                                                                 </div>

@@ -598,6 +598,7 @@ function ProductDetails() {
                 {product.variants.map((variant, index) => {
                   const isDual =
                     Array.isArray(variant.colors) && variant.colors.length === 2;
+                  const isVariantOOS = variant.manuallyOutOfStock || !variant.stock || Object.values(variant.stock).every((qty) => qty <= 0);
 
                   return (
                     <div key={index} className="relative group">
@@ -607,7 +608,7 @@ function ProductDetails() {
               ${selectedVariant === variant
                             ? "ring-1 ring-black ring-offset-1 shadow-md"
                             : "hover:ring-1 hover:ring-black hover:ring-offset-1 hover:shadow-[0_15px_35px_-5px_rgba(0,0,0,0.45)] hover:scale-110"
-                          }`}
+                          } ${isVariantOOS ? "opacity-90" : ""}`}
                       >
                         {isDual ? (
                           <>
@@ -631,13 +632,21 @@ function ProductDetails() {
                             style={{ backgroundColor: variant.hex || variant.colors?.[0] || "#ffffff" }}
                           />
                         )}
+
+                        {/* OUT OF STOCK LINE OVERLAY */}
+                        {isVariantOOS && (
+                          <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+                            <div className="w-[140%] h-[1.5px] bg-white shadow-[0_0_2px_rgba(0,0,0,0.5)] transform -rotate-45"></div>
+                          </div>
+                        )}
                       </button>
 
-                      {/* Tooltip */}
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-2 py-1 bg-black text-white text-[10px] rounded
-            opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 shadow-xl">
-                        {variant.color}
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-black"></div>
+                      {/* Tooltip - Enhanced */}
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-black text-white text-xs font-medium rounded-md
+            opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap z-50 shadow-2xl">
+                        {variant.color} {isVariantOOS && "(Out of Stock)"}
+                        {/* Arrow pointer */}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-black"></div>
                       </div>
                     </div>
                   );
@@ -663,7 +672,7 @@ function ProductDetails() {
                 const stockQty = stockData instanceof Map
                   ? Number(stockData.get(selectedSize))
                   : Number(stockData?.[selectedSize] ?? 0);
-                const isSoldOut = selectedSize && stockQty <= 0;
+                const isSoldOut = selectedSize && (stockQty <= 0 || selectedVariant?.manuallyOutOfStock);
 
                 return (
                   <div className="space-y-4">

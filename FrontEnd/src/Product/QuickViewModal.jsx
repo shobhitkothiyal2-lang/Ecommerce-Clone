@@ -14,7 +14,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination"; // Import Pagination CSS
 import { useCart } from "../Context/CartContext";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart } from "../Redux/Customers/Cart/Action";
 
 function QuickViewModal({ product, onClose }) {

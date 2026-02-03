@@ -102,17 +102,22 @@ function ProductCard({ product, onQuickView }) {
             </button>
 
             {/* Tooltip */}
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3
-      opacity-0 translate-y-2
-      group-hover/tooltip:opacity-100 group-hover/tooltip:translate-y-0
+            <div className="absolute right-full top-1/2 -translate-y-1/2 mr-3
+      opacity-0 -translate-x-2
+      group-hover/tooltip:opacity-100 group-hover/tooltip:translate-x-0
       transition-all duration-300 ease-out
       pointer-events-none z-30">
 
-              <div className="relative bg-black text-white text-[10px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+              <div className="relative bg-black text-white text-xs px-3 py-1.5 rounded shadow-xl whitespace-nowrap">
                 {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
 
                 {/* Tooltip Arrow */}
-                <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-[4px] border-transparent border-t-black"></span>
+<span className="absolute left-full top-1/2 -translate-y-1/2
+  border-y-[6px] border-y-transparent
+  border-l-[8px] border-l-black">
+</span>
+
+
               </div>
             </div>
           </div>
@@ -138,18 +143,23 @@ function ProductCard({ product, onQuickView }) {
 
             {/* Tooltip */}
             {!isQuickViewLoading && (
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3
-      opacity-0 translate-y-2
-      group-hover/tooltip:opacity-100 group-hover/tooltip:translate-y-0
+              <div className="absolute right-full top-1/2 -translate-y-1/2 mr-3
+      opacity-0 -translate-x-2
+      group-hover/tooltip:opacity-100 group-hover/tooltip:translate-x-0
       transition-all duration-300 ease-out
       pointer-events-none z-30">
 
-                <div className="relative bg-black text-white text-[10px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+                <div className="relative bg-black text-white text-xs px-3 py-1.5 rounded shadow-xl whitespace-nowrap">
                   Quick View
-                  <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-[4px] border-transparent border-t-black"></span>
+{/* Tooltip Arrow */}
+<span className="absolute left-full top-1/2 -translate-y-1/2
+  border-y-[6px] border-y-transparent
+  border-l-[8px] border-l-black">
+</span>
+
                 </div>
               </div>
-            )}
+            )} 
           </div>
 
 

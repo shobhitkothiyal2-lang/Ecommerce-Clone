@@ -24,6 +24,10 @@ export const getCart = () => async (dispatch) => {
   dispatch({ type: GET_CART_REQUEST });
   try {
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({ type: GET_CART_FAILURE, payload: "Authentication token is missing" });
+      return;
+    }
     const response = await axios.get(`${API_BASE_URL}/cart`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -37,6 +41,10 @@ export const addItemToCart = (reqData) => async (dispatch) => {
   dispatch({ type: ADD_ITEM_TO_CART_REQUEST });
   try {
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({ type: ADD_ITEM_TO_CART_FAILURE, payload: "Authentication token is missing" });
+      return;
+    }
     // reqData: { productId, size, quantity, variant }
     const response = await axios.put(`${API_BASE_URL}/cart/add`, reqData, {
       headers: { Authorization: `Bearer ${token}` },
@@ -53,6 +61,10 @@ export const removeCartItem = (cartItemId) => async (dispatch) => {
   dispatch({ type: REMOVE_CART_ITEM_REQUEST });
   try {
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({ type: REMOVE_CART_ITEM_FAILURE, payload: "Authentication token is missing" });
+      return;
+    }
     await axios.delete(`${API_BASE_URL}/cart/item/${cartItemId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -71,6 +83,10 @@ export const updateCartItem = (reqData) => async (dispatch) => {
   try {
     // reqData: { cartItemId, data: { quantity } }
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({ type: UPDATE_CART_ITEM_FAILURE, payload: "Authentication token is missing" });
+      return;
+    }
     const response = await axios.put(
       `${API_BASE_URL}/cart/item/${reqData.cartItemId}`,
       reqData.data,
@@ -89,6 +105,13 @@ export const applyCoupon = (code) => async (dispatch) => {
   dispatch({ type: "APPLY_COUPON_REQUEST" });
   try {
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({
+        type: "APPLY_COUPON_FAILURE",
+        payload: "Authentication token is missing",
+      });
+      return;
+    }
     const response = await axios.post(
       `${API_BASE_URL}/cart/apply-coupon`,
       { code },
@@ -110,6 +133,10 @@ export const removeCoupon = () => async (dispatch) => {
   dispatch({ type: "REMOVE_COUPON_REQUEST" });
   try {
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({ type: "REMOVE_COUPON_FAILURE", payload: "Authentication token is missing" });
+      return;
+    }
     const response = await axios.put(
       `${API_BASE_URL}/cart/remove-coupon`,
       {},
@@ -127,6 +154,13 @@ export const clearCartAction = () => async (dispatch) => {
   dispatch({ type: CLEAR_CART_REQUEST });
   try {
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({
+        type: CLEAR_CART_FAILURE,
+        payload: "Authentication token is missing",
+      });
+      return;
+    }
     const { data } = await axios.delete(`${API_BASE_URL}/cart`, {
       headers: { Authorization: `Bearer ${token}` },
     });

@@ -86,6 +86,10 @@ export const addAddress = (addressData) => async (dispatch) => {
   dispatch({ type: ADD_ADDRESS_REQUEST });
   try {
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({ type: ADD_ADDRESS_FAILURE, payload: "Authentication token is missing" });
+      return;
+    }
     const response = await axios.post(
       `${API_BASE_URL}/user/addresses`,
       addressData,
@@ -110,6 +114,10 @@ export const getUserAddresses = () => async (dispatch) => {
   dispatch({ type: GET_USER_ADDRESSES_REQUEST });
   try {
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({ type: GET_USER_ADDRESSES_FAILURE, payload: "Authentication token is missing" });
+      return;
+    }
     const response = await axios.get(`${API_BASE_URL}/user/addresses`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -130,6 +138,10 @@ export const deleteAddress = (addressId) => async (dispatch) => {
   dispatch({ type: DELETE_ADDRESS_REQUEST });
   try {
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({ type: DELETE_ADDRESS_FAILURE, payload: "Authentication token is missing" });
+      return;
+    }
     await axios.delete(`${API_BASE_URL}/user/addresses/${addressId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -149,6 +161,10 @@ export const updateAddress = (addressId, addressData) => async (dispatch) => {
   dispatch({ type: UPDATE_ADDRESS_REQUEST });
   try {
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({ type: UPDATE_ADDRESS_FAILURE, payload: "Authentication token is missing" });
+      return;
+    }
     const response = await axios.put(
       `${API_BASE_URL}/user/addresses/${addressId}`,
       addressData,
@@ -173,6 +189,10 @@ export const addItemToWishlist = (productId) => async (dispatch) => {
   dispatch({ type: ADD_TO_WISHLIST_REQUEST });
   try {
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({ type: ADD_TO_WISHLIST_FAILURE, payload: "Authentication token is missing" });
+      return;
+    }
     const response = await axios.put(
       `${API_BASE_URL}/user/wishlist/add`,
       { productId },
@@ -197,6 +217,10 @@ export const removeItemFromWishlist = (productId) => async (dispatch) => {
   dispatch({ type: REMOVE_FROM_WISHLIST_REQUEST });
   try {
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({ type: REMOVE_FROM_WISHLIST_FAILURE, payload: "Authentication token is missing" });
+      return;
+    }
     const response = await axios.put(
       `${API_BASE_URL}/user/wishlist/remove`,
       { productId },
@@ -221,6 +245,10 @@ export const getUserWishlist = () => async (dispatch) => {
   dispatch({ type: GET_WISHLIST_REQUEST });
   try {
     const token = localStorage.getItem("jwt");
+    if (!token) {
+      dispatch({ type: GET_WISHLIST_FAILURE, payload: "Authentication token is missing" });
+      return;
+    }
     const response = await axios.get(`${API_BASE_URL}/user/wishlist`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -240,6 +268,10 @@ export const getUserWishlist = () => async (dispatch) => {
 export const getUser = (token) => async (dispatch) => {
   dispatch({ type: GET_USER_REQUEST });
   try {
+    if (!token) {
+      dispatch({ type: GET_USER_FAILURE, payload: "Authentication token is missing" });
+      return;
+    }
     const response = await axios.get(`${API_BASE_URL}/user/profile`, {
       headers: {
         Authorization: `Bearer ${token}`,
