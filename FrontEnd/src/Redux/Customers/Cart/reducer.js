@@ -14,7 +14,7 @@ import {
   CLEAR_CART_REQUEST,
   CLEAR_CART_SUCCESS,
   CLEAR_CART_FAILURE,
-} from "./ActionType";
+} from "./actionType.js";
 import { LOGOUT } from "../../Auth/actionType";
 
 const initialState = {
