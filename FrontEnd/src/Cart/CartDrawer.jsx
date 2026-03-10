@@ -19,7 +19,7 @@ import {
     applyCoupon as applyCouponAction,
     removeCoupon as removeCouponAction,
     addItemToCart,
-} from "../Redux/Customers/Cart/Action";
+} from "../Redux/Customers/Cart/action";
 import { getUserAddresses, addAddress } from "../Redux/Auth/actions";
 import { findProducts } from "../Redux/Customers/Product/action";
 import { useCart } from "../Context/CartContext";

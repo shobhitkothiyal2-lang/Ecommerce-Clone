@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCoupons } from "../Redux/Customers/Coupon/Action.js";
-import { applyCoupon } from "../Redux/Customers/Cart/Action.js";
+import { applyCoupon } from "../Redux/Customers/Cart/action.js";
 import { MdClose, MdContentCopy, MdCheckCircle } from "react-icons/md";
 import { FaTag } from "react-icons/fa";
 
