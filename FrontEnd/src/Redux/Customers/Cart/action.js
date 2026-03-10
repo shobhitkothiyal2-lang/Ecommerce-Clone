@@ -15,7 +15,7 @@ import {
   CLEAR_CART_REQUEST,
   CLEAR_CART_SUCCESS,
   CLEAR_CART_FAILURE,
-} from "./ActionType";
+} from "./actionType.js";
 
 const API_BASE_URL =
   import.meta.env.VITE_BACKEND_URL || "http://localhost:8000/api";
