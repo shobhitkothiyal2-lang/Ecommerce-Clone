@@ -20,13 +20,13 @@ import AboutUs from "./AboutUs/AboutUs";
 import MyReturns from "./MyReturns/MyReturns";
 import Blog from "./Blog/Blog";
 import BlogDetails from "./Blog/BlogDetails";
-import ScrollTOTop from "./ScrollToTop.jsx";;
 import Careers from "./Careers/Careers";
 import OrderHistory from "./OrderHistory/OrderHistory";
 import OrderDetails from "./OrderHistory/OrderDetails";
 import Addresses from "./OrderHistory/Addresses";
 import Login from "./Pages/Login";
 import OrderSuccess from "./Order/OrderSuccess";
+import ScrollToTop from "./Common/ScrollToTop";
 
 import { useDispatch, useSelector } from "react-redux"; // Import hooks
 import { useEffect } from "react";
